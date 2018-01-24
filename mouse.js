@@ -1,3 +1,7 @@
+import * as pixel from './pixel';
+import * as constants from './constants';
+import * as game from './game';
+
 export function createMouseDownListener() {
 	
 	getCanvas().addEventListener('mousedown', function(evt) {
@@ -6,8 +10,8 @@ export function createMouseDownListener() {
         var x = parseInt((mousePos.x)/16);
         var y = parseInt((mousePos.y)/16);
 
-		updatePixelByClick(x,y, _GLOBAL_VALUES.lastBoardPrinted);
-        startStop(false);
+				pixel.updatePixelByClick(x,y, constants._GLOBAL_VALUES.lastBoardPrinted);
+        game.startStop(false);
 
       }, false);
 };

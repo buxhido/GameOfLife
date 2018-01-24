@@ -1,10 +1,14 @@
+import * as arrayUtil from './arrayUtil';
+import * as rule from './rule';
+import * as constants from './constants';
+
 export function GameBoard(columns,rows) {
 	
 	this.columns= columns;
 	this.rows = rows;
 	this.board = null;
 	this.createBoard = function(){ 
-		this.board = populateBoard(create2DArray(this.columns,this.rows),this.columns,this.rows);
+		this.board = populateBoard(arrayUtil.create2DArray(this.columns,this.rows),this.columns,this.rows);
 	};
 	this.getInfoBoardGame = function() {return "Rows: "+this.rows + "; Columns: "+this.columns;};
 };
@@ -39,10 +43,10 @@ export function showBoardGame(gameBoard) {
 
 export function applyBoardRules(gameBoard) {
 
-	if(_GLOBAL_VALUES.run) {
+	if(constants._GLOBAL_VALUES.run) {
 
-		var lastBoardPrinted = populateBoard(create2DArray(gameBoard.columns,gameBoard.rows),gameBoard.columns,gameBoard.rows);		
-		var nextTimeBoard = populateBoard(create2DArray(gameBoard.columns,gameBoard.rows),gameBoard.columns,gameBoard.rows);
+		var lastBoardPrinted = populateBoard(arrayUtil.create2DArray(gameBoard.columns,gameBoard.rows),gameBoard.columns,gameBoard.rows);		
+		var nextTimeBoard = populateBoard(arrayUtil.create2DArray(gameBoard.columns,gameBoard.rows),gameBoard.columns,gameBoard.rows);
 
 		for (var i = 0; i < gameBoard.columns; i++) {
 			for (var j = 0; j < gameBoard.rows; j++) {
@@ -52,11 +56,11 @@ export function applyBoardRules(gameBoard) {
 	   		}
 		}
 
-		_GLOBAL_VALUES.lastBoardPrinted = lastBoardPrinted;
+		constants._GLOBAL_VALUES.lastBoardPrinted = lastBoardPrinted;
 
 		gameBoard.board = nextTimeBoard;	
 		showBoardGame(gameBoard);
-		setTimeout( function() { applyBoardRules(gameBoard)  }  , _GLOBAL_VALUES.delayTime);
+		setTimeout( function() { rule.applyBoardRules(gameBoard)  }  , constants._GLOBAL_VALUES.delayTime);
 	}
 	
 };
@@ -69,6 +73,19 @@ export function printBaseBoard(board){
 
 export function resetBoard() {
 
-	_GLOBAL_VALUES.lastBoardPrinted = null;
+	constants._GLOBAL_VALUES.lastBoardPrinted = null;
 	startStop(false);	
+};
+
+export function updateBoardFromLastBoardPrinted() {
+
+	if(null == constants._GLOBAL_VALUES.lastBoardPrinted) {
+		var gameBoard = constants._GLOBAL_VALUES.gameOfLifeBoard;
+		var rows = constants._GLOBAL_VALUES.gameOfLifeBoard.rows;
+		var columns = constants._GLOBAL_VALUES.gameOfLifeBoard.columns;
+		constants._GLOBAL_VALUES.lastBoardPrinted = populateBoard(arrayUtil.create2DArray(columns,rows),columns,rows);
+	}
+
+	constants._GLOBAL_VALUES.gameOfLifeBoard.board = constants._GLOBAL_VALUES.lastBoardPrinted;
+	showBoardGame(constants._GLOBAL_VALUES.gameOfLifeBoard);
 };
