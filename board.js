@@ -1,6 +1,7 @@
 import * as arrayUtil from './arrayUtil';
 import * as rule from './rule';
 import * as constants from './constants';
+import * as pixel from './pixel';
 
 export function GameBoard(columns,rows) {
 	
@@ -35,7 +36,7 @@ export function showBoardGame(gameBoard) {
 	if(null != gameBoard) {
 		for (var i = 0; i < gameBoard.columns; i++) {
 			for (var j = 0; j < gameBoard.rows; j++) {
-				gameBoard.board[i][j].isAlive ? printPixel(i,j) :  clearPixel(i,j);
+				gameBoard.board[i][j].isAlive ? pixel.printPixel(i,j) :  pixel.clearPixel(i,j);
 	   		}
 		}
 	}
