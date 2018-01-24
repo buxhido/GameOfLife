@@ -1,4 +1,4 @@
-var applyCellRules = function(gameBoard,cell) {
+export function applyCellRules(gameBoard,cell) {
 
 	var isAlive = false;
 	var neighborsAlive = 0;
@@ -18,7 +18,7 @@ var applyCellRules = function(gameBoard,cell) {
 	return isAlive;
 };
 
-var isNeighborAlive = function(gameBoard,cell,neighborType) {
+export function isNeighborAlive(gameBoard,cell,neighborType) {
 	var isAlive = false;
 	switch (neighborType) {
 		case _NEIGHBORS.NORTH_WEST:

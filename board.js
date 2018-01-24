@@ -1,4 +1,4 @@
-function GameBoard(columns,rows) {
+export function GameBoard(columns,rows) {
 	
 	this.columns= columns;
 	this.rows = rows;
@@ -9,14 +9,14 @@ function GameBoard(columns,rows) {
 	this.getInfoBoardGame = function() {return "Rows: "+this.rows + "; Columns: "+this.columns;};
 };
 
-var createGameBoard = function(columns,rows) {
+export function createGameBoard(columns,rows) {
 	
 	var gameBoard = new GameBoard(columns,rows);
 	gameBoard.createBoard();
 	return gameBoard;
 };
 
-var populateBoard = function (board,columns,rows) {
+export function populateBoard(board,columns,rows) {
 	
 	for (var i = 0; i < columns; i++) {
 		for (var j = 0; j < rows; j++) {
@@ -26,7 +26,7 @@ var populateBoard = function (board,columns,rows) {
 	return board;
 };
 
-var showBoardGame = function (gameBoard) {
+export function showBoardGame(gameBoard) {
 
 	if(null != gameBoard) {
 		for (var i = 0; i < gameBoard.columns; i++) {
@@ -37,7 +37,7 @@ var showBoardGame = function (gameBoard) {
 	}
 };
 
-var applyBoardRules = function (gameBoard) {
+export function applyBoardRules(gameBoard) {
 
 	if(_GLOBAL_VALUES.run) {
 
@@ -61,27 +61,14 @@ var applyBoardRules = function (gameBoard) {
 	
 };
 
-var printBaseBoard = function(board){
+export function printBaseBoard(board){
 
 	showGrid();
 	createMouseDownListener();
 };
 
-var resetBoard = function() {
+export function resetBoard() {
 
 	_GLOBAL_VALUES.lastBoardPrinted = null;
 	startStop(false);	
-};
-
-var updateBoardFromLastBoardPrinted = function() {
-
-	if(null == _GLOBAL_VALUES.lastBoardPrinted) {
-		var gameBoard = _GLOBAL_VALUES.gameOfLifeBoard;
-		var rows = _GLOBAL_VALUES.gameOfLifeBoard.rows;
-		var columns = _GLOBAL_VALUES.gameOfLifeBoard.columns;
-		_GLOBAL_VALUES.lastBoardPrinted = populateBoard(create2DArray(columns,rows),columns,rows);
-	}
-
-	_GLOBAL_VALUES.gameOfLifeBoard.board = _GLOBAL_VALUES.lastBoardPrinted;
-	showBoardGame(_GLOBAL_VALUES.gameOfLifeBoard);
 };

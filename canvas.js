@@ -1,4 +1,4 @@
-var showGrid = function() {
+export function showGrid() {
 	
 	var context = getCanvasContext();
 
@@ -14,12 +14,12 @@ var showGrid = function() {
 
 	context.strokeStyle = "#000";
 	context.stroke();
-}
+};
 
-var getCanvas = function() {
+export function getCanvas() {
 	return document.getElementById("gameOfLifeCanvas");
-}
+};
 
-var getCanvasContext = function() {
+export function getCanvasContext() {
 	return  getCanvas().getContext("2d");
-}
+};

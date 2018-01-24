@@ -1,15 +1,15 @@
-/* 
+
 var _GLOBAL_VALUES = {
 	delayTime:200,
 	run: true,
 	gameOfLifeBoard : null,
 	lastBoardPrinted: null
 };
- */
-/* var _NEIGHBORS = {  NORTH_WEST:"NORTH_WEST", NORTH:"NORTH", NORTH_EAST:"NORTH_EAST", EAST:"EAST", 
-					SOUTH_EAST:"SOUTH_EAST", SOUTH: "SOUTH", SOUTH_WEST: "SOUTH_WEST",WEST:"WEST"} */
 
-/* function GameBoard(columns,rows) {
+var _NEIGHBORS = {  NORTH_WEST:"NORTH_WEST", NORTH:"NORTH", NORTH_EAST:"NORTH_EAST", EAST:"EAST", 
+					SOUTH_EAST:"SOUTH_EAST", SOUTH: "SOUTH", SOUTH_WEST: "SOUTH_WEST",WEST:"WEST"}
+
+function GameBoard(columns,rows) {
 	
 	this.columns= columns;
 	this.rows = rows;
@@ -18,46 +18,46 @@ var _GLOBAL_VALUES = {
 		this.board = populateBoard(create2DArray(this.columns,this.rows),this.columns,this.rows);
 	};
 	this.getInfoBoardGame = function() {return "Rows: "+this.rows + "; Columns: "+this.columns;};
-}; */
+};
 
-/* function Cell(x,y) {
+function Cell(x,y) {
 	
 	this.isAlive=false;
 	this.x = x;
 	this.y = y;
 	this.getInfoCell = function() {return "x: "+this.x+" - y: "+this.y+ " - isAlive: "+this.isAlive};
-}; */
+};
 
-/* var createGameBoard = function(columns,rows) {
+var createGameBoard = function(columns,rows) {
 	
 	var gameBoard = new GameBoard(columns,rows);
 	gameBoard.createBoard();
 	return gameBoard;
-}; */
+};
 
-/* var launchGameOfLife = function() {
+var launchGameOfLife = function() {
 	
 	_GLOBAL_VALUES.gameOfLifeBoard = createGameBoard(15,15);
 	showBoardGame(_GLOBAL_VALUES.gameOfLifeBoard);
 	startStop(false);
 	printBaseBoard(_GLOBAL_VALUES.gameOfLifeBoard.board);
-}; */
+};
 
-/* var getCellByPossition = function(gameBoard,x_poss,y_poss) {
+var getCellByPossition = function(gameBoard,x_poss,y_poss) {
 	
 	return gameBoard.board[x_poss][y_poss];
-}; */
+};
 
-/* var create2DArray = function (columns,rows) {
+var create2DArray = function (columns,rows) {
 	
 	var x = new Array(columns);
 	for (var i = 0; i < columns; i++) {
 	   x[i] = new Array(rows);
 	}
    return x;
-}; */
+};
 
-/* var populateBoard = function (board,columns,rows) {
+var populateBoard = function (board,columns,rows) {
 	
 	for (var i = 0; i < columns; i++) {
 		for (var j = 0; j < rows; j++) {
@@ -65,9 +65,9 @@ var _GLOBAL_VALUES = {
    		}	
 	}
 	return board;
-}; */
+};
 
-/* var showBoardGame = function (gameBoard) {
+var showBoardGame = function (gameBoard) {
 
 	if(null != gameBoard) {
 		for (var i = 0; i < gameBoard.columns; i++) {
@@ -76,9 +76,9 @@ var _GLOBAL_VALUES = {
 	   		}
 		}
 	}
-}; */
+};
 
-/* var applyBoardRules = function (gameBoard) {
+var applyBoardRules = function (gameBoard) {
 
 	if(_GLOBAL_VALUES.run) {
 
@@ -100,10 +100,9 @@ var _GLOBAL_VALUES = {
 		setTimeout( function() { applyBoardRules(gameBoard)  }  , _GLOBAL_VALUES.delayTime);
 	}
 	
-}; */
+};
 
-
-/* var applyCellRules = function(gameBoard,cell) {
+var applyCellRules = function(gameBoard,cell) {
 
 	var isAlive = false;
 	var neighborsAlive = 0;
@@ -121,9 +120,9 @@ var _GLOBAL_VALUES = {
 	}
 
 	return isAlive;
-}; */
+};
 
-/* var isNeighborAlive = function(gameBoard,cell,neighborType) {
+var isNeighborAlive = function(gameBoard,cell,neighborType) {
 	var isAlive = false;
 	switch (neighborType) {
 		case _NEIGHBORS.NORTH_WEST:
@@ -170,9 +169,9 @@ var _GLOBAL_VALUES = {
 			isAlive = false;
 	}
 	return isAlive;
-}; */
+};
 
-/* var printPixel = function(x,y) {
+var printPixel = function(x,y) {
 	
     cxt = getCanvasContext();
     cxt.fillRect((x*16)+3, (y*16)+3, 10, 10);
@@ -193,15 +192,15 @@ var updatePixelByClick = function(x,y,board) {
 	} else {
 		clearPixel(x,y)
 	}
-} */
+}
 
-/* var printBaseBoard = function(board){
+var printBaseBoard = function(board){
 
 	showGrid();
 	createMouseDownListener();
-} */
+}
 
-/* var createMouseDownListener = function() {
+var createMouseDownListener = function() {
 	
 	getCanvas().addEventListener('mousedown', function(evt) {
         
@@ -213,9 +212,9 @@ var updatePixelByClick = function(x,y,board) {
         startStop(false);
 
       }, false);
-}; */
+}
 
-/* var showGrid = function() {
+var showGrid = function() {
 	
 	var context = getCanvasContext();
 
@@ -231,32 +230,32 @@ var updatePixelByClick = function(x,y,board) {
 
 	context.strokeStyle = "#000";
 	context.stroke();
-} */
+}
 
-/* var getCanvas = function() {
+var getCanvas = function() {
 	return document.getElementById("gameOfLifeCanvas");
 }
 
 var getCanvasContext = function() {
 	return  getCanvas().getContext("2d");
-} */
+}
 
-/* var getMousePos = function(canvas, evt) {
+var getMousePos = function(canvas, evt) {
 	
 	var rect = canvas.getBoundingClientRect();
 	return {
 	  x: evt.clientX - rect.left,
 	  y: evt.clientY - rect.top
 	};
-} */
+}
 
-/* var resetBoard = function() {
+var resetBoard = function() {
 
 	_GLOBAL_VALUES.lastBoardPrinted = null;
 	startStop(false);	
-} */
+}
 
-/* var startStop = function(run) {
+var startStop = function(run) {
 
 	_GLOBAL_VALUES.run = run;	
 
@@ -268,8 +267,8 @@ var getCanvasContext = function() {
 	} else {
 		updateBoardFromLastBoardPrinted();	
 	}
-}; */
-/* 
+};
+
 var updateBoardFromLastBoardPrinted = function() {
 
 	if(null == _GLOBAL_VALUES.lastBoardPrinted) {
@@ -281,4 +280,4 @@ var updateBoardFromLastBoardPrinted = function() {
 
 	_GLOBAL_VALUES.gameOfLifeBoard.board = _GLOBAL_VALUES.lastBoardPrinted;
 	showBoardGame(_GLOBAL_VALUES.gameOfLifeBoard);
-}; */
+};

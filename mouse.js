@@ -1,4 +1,4 @@
-var createMouseDownListener = function() {
+export function createMouseDownListener() {
 	
 	getCanvas().addEventListener('mousedown', function(evt) {
         
@@ -12,11 +12,11 @@ var createMouseDownListener = function() {
       }, false);
 };
 
-var getMousePos = function(canvas, evt) {
+export function getMousePos(canvas, evt) {
 	
 	var rect = canvas.getBoundingClientRect();
 	return {
 	  x: evt.clientX - rect.left,
 	  y: evt.clientY - rect.top
 	};
-}
+};
