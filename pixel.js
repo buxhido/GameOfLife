@@ -1,12 +1,14 @@
+import * as canvas from './canvas';
+
 export function printPixel(x,y) {
 	
-    cxt = getCanvasContext();
+    cxt = canvas.getCanvasContext();
     cxt.fillRect((x*16)+3, (y*16)+3, 10, 10);
 };
 
 export function clearPixel(x,y) {
 	
-    cxt = getCanvasContext();
+    cxt = canvas.getCanvasContext();
     cxt.clearRect((x*16)+3, (y*16)+3, 10, 10);
 };
 

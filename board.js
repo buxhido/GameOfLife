@@ -1,7 +1,10 @@
 import * as arrayUtil from './arrayUtil';
-import * as rule from './rule';
 import * as constants from './constants';
 import * as pixel from './pixel';
+import * as mouse from './mouse';
+import * as canvas from './canvas';
+import * as cell from './cell';
+import * as game from './game';
 
 export function GameBoard(columns,rows) {
 	
@@ -25,7 +28,7 @@ export function populateBoard(board,columns,rows) {
 	
 	for (var i = 0; i < columns; i++) {
 		for (var j = 0; j < rows; j++) {
-			board[i][j] = new Cell(i,j);
+			board[i][j] = cell.BuildCell(i,j);
    		}	
 	}
 	return board;
@@ -52,7 +55,7 @@ export function applyBoardRules(gameBoard) {
 		for (var i = 0; i < gameBoard.columns; i++) {
 			for (var j = 0; j < gameBoard.rows; j++) {
 				var currentCell = gameBoard.board[i][j];
-				nextTimeBoard[i][j].isAlive = applyCellRules(gameBoard,currentCell);
+				nextTimeBoard[i][j].isAlive = rule.applyCellRules(gameBoard,currentCell);
 				lastBoardPrinted[i][j].isAlive = nextTimeBoard[i][j].isAlive;			
 	   		}
 		}
@@ -61,21 +64,21 @@ export function applyBoardRules(gameBoard) {
 
 		gameBoard.board = nextTimeBoard;	
 		showBoardGame(gameBoard);
-		setTimeout( function() { rule.applyBoardRules(gameBoard)  }  , constants._GLOBAL_VALUES.delayTime);
+		setTimeout( function() { applyBoardRules(gameBoard)  }  , constants._GLOBAL_VALUES.delayTime);
 	}
 	
 };
 
 export function printBaseBoard(board){
 
-	showGrid();
-	createMouseDownListener();
+	canvas.showGrid();
+	mouse.createMouseDownListener();
 };
 
 export function resetBoard() {
 
 	constants._GLOBAL_VALUES.lastBoardPrinted = null;
-	startStop(false);	
+	game.startStop(false);	
 };
 
 export function updateBoardFromLastBoardPrinted() {

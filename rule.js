@@ -1,4 +1,5 @@
 import * as constants from './constants';
+import * as cell from './cell';
 
 export function applyCellRules(gameBoard,cell) {
 
@@ -25,42 +26,42 @@ export function isNeighborAlive(gameBoard,cell,neighborType) {
 	switch (neighborType) {
 		case constants._NEIGHBORS.NORTH_WEST:
 			if(cell.x > 0 && cell.y > 0) {
-				isAlive = getCellByPossition(gameBoard, cell.x -1 , cell.y - 1 ).isAlive;
+				isAlive = cell.getCellByPossition(gameBoard, cell.x -1 , cell.y - 1 ).isAlive;
 			}
 			break;
 		case constants._NEIGHBORS.NORTH:
 			if(cell.y > 0 ) {
-				isAlive = getCellByPossition(gameBoard, cell.x , cell.y - 1 ).isAlive;
+				isAlive = cell.getCellByPossition(gameBoard, cell.x , cell.y - 1 ).isAlive;
 			}
 			break;
 		case constants._NEIGHBORS.NORTH_EAST:
 			if(cell.x < gameBoard.columns - 1 && cell.y > 0 ) {
-				isAlive = getCellByPossition(gameBoard, cell.x + 1 , cell.y - 1 ).isAlive;
+				isAlive = cell.getCellByPossition(gameBoard, cell.x + 1 , cell.y - 1 ).isAlive;
 			}
 			break;
 		case constants._NEIGHBORS.EAST:
 			if(cell.x < gameBoard.columns - 1 ) {
-				isAlive = getCellByPossition(gameBoard, cell.x + 1 , cell.y ).isAlive;
+				isAlive = cell.getCellByPossition(gameBoard, cell.x + 1 , cell.y ).isAlive;
 			}
 			break;
 		case constants._NEIGHBORS.SOUTH_EAST:
 			if(cell.x < gameBoard.columns - 1 && cell.y < gameBoard.rows - 1 ) {
-				isAlive = getCellByPossition(gameBoard, cell.x + 1 , cell.y + 1 ).isAlive;
+				isAlive = cell.getCellByPossition(gameBoard, cell.x + 1 , cell.y + 1 ).isAlive;
 			}
 			break;
 		case constants._NEIGHBORS.SOUTH:
 			if(cell.y < gameBoard.rows - 1 ) {
-				isAlive = getCellByPossition(gameBoard, cell.x , cell.y + 1 ).isAlive;
+				isAlive = cell.getCellByPossition(gameBoard, cell.x , cell.y + 1 ).isAlive;
 			}
 			break;
 		case constants._NEIGHBORS.SOUTH_WEST:
 			if(cell.x > 0 && cell.y < gameBoard.rows - 1 ) {
-				isAlive = getCellByPossition(gameBoard, cell.x - 1 , cell.y + 1 ).isAlive;
+				isAlive = cell.getCellByPossition(gameBoard, cell.x - 1 , cell.y + 1 ).isAlive;
 			}
 			break;
 		case constants._NEIGHBORS.WEST:
 			if(cell.x > 0 ) {
-				isAlive = getCellByPossition(gameBoard, cell.x - 1 , cell.y ).isAlive;
+				isAlive = cell.getCellByPossition(gameBoard, cell.x - 1 , cell.y ).isAlive;
 			}
 			break;
 		default:

@@ -1,12 +1,13 @@
 import * as pixel from './pixel';
 import * as constants from './constants';
 import * as game from './game';
+import * as canvas from './canvas';
 
 export function createMouseDownListener() {
 	
-	getCanvas().addEventListener('mousedown', function(evt) {
+	canvas.getCanvas().addEventListener('mousedown', function(evt) {
         
-        var mousePos = getMousePos(getCanvas(), evt);
+        var mousePos = getMousePos(canvas.getCanvas(), evt);
         var x = parseInt((mousePos.x)/16);
         var y = parseInt((mousePos.y)/16);
 
