@@ -1,8 +1,7 @@
 
 export function showGrid() {
-	
-	var context = getCanvasContext();
 
+	var context = getCanvasContext();
 	for (var x = 0.0; x <= 160; x += 16) {
 	  context.moveTo(x, 0);
 	  context.lineTo(x, 160);

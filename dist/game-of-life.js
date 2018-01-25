@@ -85,6 +85,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.launchGameOfLife = launchGameOfLife;
 exports.startStop = startStop;
+exports.resetBoard = resetBoard;
 
 var _constants = __webpack_require__(1);
 
@@ -97,7 +98,6 @@ var board = _interopRequireWildcard(_board);
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 function launchGameOfLife() {
-
 	constants._GLOBAL_VALUES.gameOfLifeBoard = board.createGameBoard(15, 15);
 	board.showBoardGame(constants._GLOBAL_VALUES.gameOfLifeBoard);
 	startStop(false);
@@ -105,7 +105,6 @@ function launchGameOfLife() {
 };
 
 function startStop(run) {
-
 	constants._GLOBAL_VALUES.run = run;
 
 	document.getElementById('playId').disabled = run;
@@ -116,6 +115,11 @@ function startStop(run) {
 	} else {
 		board.updateBoardFromLastBoardPrinted();
 	}
+};
+
+function resetBoard() {
+	constants._GLOBAL_VALUES.lastBoardPrinted = null;
+	startStop(false);
 };
 
 /***/ }),
@@ -154,7 +158,6 @@ exports.getCanvasContext = getCanvasContext;
 function showGrid() {
 
 	var context = getCanvasContext();
-
 	for (var x = 0.0; x <= 160; x += 16) {
 		context.moveTo(x, 0);
 		context.lineTo(x, 160);
@@ -185,7 +188,7 @@ function getCanvasContext() {
 
 
 Object.defineProperty(exports, "__esModule", {
-	value: true
+    value: true
 });
 exports.printPixel = printPixel;
 exports.clearPixel = clearPixel;
@@ -198,26 +201,22 @@ var canvas = _interopRequireWildcard(_canvas);
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 function printPixel(x, y) {
-
-	cxt = canvas.getCanvasContext();
-	cxt.fillRect(x * 16 + 3, y * 16 + 3, 10, 10);
+    cxt = canvas.getCanvasContext();
+    cxt.fillRect(x * 16 + 3, y * 16 + 3, 10, 10);
 };
 
 function clearPixel(x, y) {
-
-	cxt = canvas.getCanvasContext();
-	cxt.clearRect(x * 16 + 3, y * 16 + 3, 10, 10);
+    cxt = canvas.getCanvasContext();
+    cxt.clearRect(x * 16 + 3, y * 16 + 3, 10, 10);
 };
 
 function updatePixelByClick(x, y, board) {
-
-	board[x][y].isAlive = !board[x][y].isAlive;
-
-	if (board[x][y].isAlive) {
-		printPixel(x, y);
-	} else {
-		clearPixel(x, y);
-	}
+    board[x][y].isAlive = !board[x][y].isAlive;
+    if (board[x][y].isAlive) {
+        printPixel(x, y);
+    } else {
+        clearPixel(x, y);
+    }
 };
 
 /***/ }),
@@ -236,7 +235,6 @@ exports.populateBoard = populateBoard;
 exports.showBoardGame = showBoardGame;
 exports.applyBoardRules = applyBoardRules;
 exports.printBaseBoard = printBaseBoard;
-exports.resetBoard = resetBoard;
 exports.updateBoardFromLastBoardPrinted = updateBoardFromLastBoardPrinted;
 
 var _arrayUtil = __webpack_require__(5);
@@ -270,7 +268,6 @@ var game = _interopRequireWildcard(_game);
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 function GameBoard(columns, rows) {
-
 	this.columns = columns;
 	this.rows = rows;
 	this.board = null;
@@ -283,14 +280,12 @@ function GameBoard(columns, rows) {
 };
 
 function createGameBoard(columns, rows) {
-
 	var gameBoard = new GameBoard(columns, rows);
 	gameBoard.createBoard();
 	return gameBoard;
 };
 
 function populateBoard(board, columns, rows) {
-
 	for (var i = 0; i < columns; i++) {
 		for (var j = 0; j < rows; j++) {
 			board[i][j] = cell.BuildCell(i, j);
@@ -300,7 +295,6 @@ function populateBoard(board, columns, rows) {
 };
 
 function showBoardGame(gameBoard) {
-
 	if (null != gameBoard) {
 		for (var i = 0; i < gameBoard.columns; i++) {
 			for (var j = 0; j < gameBoard.rows; j++) {
@@ -311,7 +305,6 @@ function showBoardGame(gameBoard) {
 };
 
 function applyBoardRules(gameBoard) {
-
 	if (constants._GLOBAL_VALUES.run) {
 
 		var lastBoardPrinted = populateBoard(arrayUtil.create2DArray(gameBoard.columns, gameBoard.rows), gameBoard.columns, gameBoard.rows);
@@ -326,7 +319,6 @@ function applyBoardRules(gameBoard) {
 		}
 
 		constants._GLOBAL_VALUES.lastBoardPrinted = lastBoardPrinted;
-
 		gameBoard.board = nextTimeBoard;
 		showBoardGame(gameBoard);
 		setTimeout(function () {
@@ -336,26 +328,17 @@ function applyBoardRules(gameBoard) {
 };
 
 function printBaseBoard(board) {
-
 	canvas.showGrid();
 	mouse.createMouseDownListener();
 };
 
-function resetBoard() {
-
-	constants._GLOBAL_VALUES.lastBoardPrinted = null;
-	game.startStop(false);
-};
-
 function updateBoardFromLastBoardPrinted() {
-
 	if (null == constants._GLOBAL_VALUES.lastBoardPrinted) {
 		var gameBoard = constants._GLOBAL_VALUES.gameOfLifeBoard;
 		var rows = constants._GLOBAL_VALUES.gameOfLifeBoard.rows;
 		var columns = constants._GLOBAL_VALUES.gameOfLifeBoard.columns;
 		constants._GLOBAL_VALUES.lastBoardPrinted = populateBoard(arrayUtil.create2DArray(columns, rows), columns, rows);
 	}
-
 	constants._GLOBAL_VALUES.gameOfLifeBoard.board = constants._GLOBAL_VALUES.lastBoardPrinted;
 	showBoardGame(constants._GLOBAL_VALUES.gameOfLifeBoard);
 };
@@ -372,7 +355,6 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.create2DArray = create2DArray;
 function create2DArray(columns, rows) {
-
 	var x = new Array(columns);
 	for (var i = 0; i < columns; i++) {
 		x[i] = new Array(rows);
@@ -412,20 +394,16 @@ var canvas = _interopRequireWildcard(_canvas);
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 function createMouseDownListener() {
-
 	canvas.getCanvas().addEventListener('mousedown', function (evt) {
-
 		var mousePos = getMousePos(canvas.getCanvas(), evt);
 		var x = parseInt(mousePos.x / 16);
 		var y = parseInt(mousePos.y / 16);
-
 		pixel.updatePixelByClick(x, y, constants._GLOBAL_VALUES.lastBoardPrinted);
 		game.startStop(false);
 	}, false);
 };
 
 function getMousePos(canvas, evt) {
-
 	var rect = canvas.getBoundingClientRect();
 	return {
 		x: evt.clientX - rect.left,
@@ -458,7 +436,6 @@ function BuildCell(x, y) {
 };
 
 function getCellByPossition(gameBoard, x_poss, y_poss) {
-
 	return gameBoard.board[x_poss][y_poss];
 };
 

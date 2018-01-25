@@ -9,6 +9,5 @@ export function BuildCell(x,y) {
 };
 
 export function getCellByPossition(gameBoard,x_poss,y_poss) {
-	
 	return gameBoard.board[x_poss][y_poss];
 };

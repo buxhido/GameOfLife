@@ -7,7 +7,6 @@ import * as cell from './cell';
 import * as game from './game';
 
 export function GameBoard(columns,rows) {
-	
 	this.columns= columns;
 	this.rows = rows;
 	this.board = null;
@@ -18,14 +17,12 @@ export function GameBoard(columns,rows) {
 };
 
 export function createGameBoard(columns,rows) {
-	
 	var gameBoard = new GameBoard(columns,rows);
 	gameBoard.createBoard();
 	return gameBoard;
 };
 
 export function populateBoard(board,columns,rows) {
-	
 	for (var i = 0; i < columns; i++) {
 		for (var j = 0; j < rows; j++) {
 			board[i][j] = cell.BuildCell(i,j);
@@ -35,7 +32,6 @@ export function populateBoard(board,columns,rows) {
 };
 
 export function showBoardGame(gameBoard) {
-
 	if(null != gameBoard) {
 		for (var i = 0; i < gameBoard.columns; i++) {
 			for (var j = 0; j < gameBoard.rows; j++) {
@@ -46,7 +42,6 @@ export function showBoardGame(gameBoard) {
 };
 
 export function applyBoardRules(gameBoard) {
-
 	if(constants._GLOBAL_VALUES.run) {
 
 		var lastBoardPrinted = populateBoard(arrayUtil.create2DArray(gameBoard.columns,gameBoard.rows),gameBoard.columns,gameBoard.rows);		
@@ -61,7 +56,6 @@ export function applyBoardRules(gameBoard) {
 		}
 
 		constants._GLOBAL_VALUES.lastBoardPrinted = lastBoardPrinted;
-
 		gameBoard.board = nextTimeBoard;	
 		showBoardGame(gameBoard);
 		setTimeout( function() { applyBoardRules(gameBoard)  }  , constants._GLOBAL_VALUES.delayTime);
@@ -70,26 +64,17 @@ export function applyBoardRules(gameBoard) {
 };
 
 export function printBaseBoard(board){
-
 	canvas.showGrid();
 	mouse.createMouseDownListener();
 };
 
-export function resetBoard() {
-
-	constants._GLOBAL_VALUES.lastBoardPrinted = null;
-	game.startStop(false);	
-};
-
 export function updateBoardFromLastBoardPrinted() {
-
 	if(null == constants._GLOBAL_VALUES.lastBoardPrinted) {
 		var gameBoard = constants._GLOBAL_VALUES.gameOfLifeBoard;
 		var rows = constants._GLOBAL_VALUES.gameOfLifeBoard.rows;
 		var columns = constants._GLOBAL_VALUES.gameOfLifeBoard.columns;
 		constants._GLOBAL_VALUES.lastBoardPrinted = populateBoard(arrayUtil.create2DArray(columns,rows),columns,rows);
 	}
-
 	constants._GLOBAL_VALUES.gameOfLifeBoard.board = constants._GLOBAL_VALUES.lastBoardPrinted;
 	showBoardGame(constants._GLOBAL_VALUES.gameOfLifeBoard);
 };

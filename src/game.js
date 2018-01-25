@@ -2,7 +2,6 @@ import * as constants from './constants';
 import * as board from './board';
 
 export function launchGameOfLife() {
-	
 	constants._GLOBAL_VALUES.gameOfLifeBoard = board.createGameBoard(15,15);
 	board.showBoardGame(constants._GLOBAL_VALUES.gameOfLifeBoard);
 	startStop(false);
@@ -10,7 +9,6 @@ export function launchGameOfLife() {
 };
 
 export function startStop(run) {
-
 	constants._GLOBAL_VALUES.run = run;	
 
 	document.getElementById('playId').disabled = run;
@@ -21,4 +19,9 @@ export function startStop(run) {
 	} else {
 		board.updateBoardFromLastBoardPrinted();	
 	}
+};
+
+export function resetBoard() {
+	constants._GLOBAL_VALUES.lastBoardPrinted = null;
+	startStop(false);	
 };
