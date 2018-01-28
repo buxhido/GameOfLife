@@ -1,23 +1,28 @@
-import * as pixel from './pixel';
-import * as constants from './constants';
-import * as game from './game';
-import * as canvas from './canvas';
+import {Game} from './game.js';
+import {Pixel} from './pixel.js';
+import {Canvas} from './canvas.js';
+import {Constants} from './constants.js';
 
-export function createMouseDownListener() {
-	canvas.getCanvas().addEventListener('mousedown', function(evt) {
-        var mousePos = getMousePos(canvas.getCanvas(), evt);
-        var x = parseInt((mousePos.x)/16);
-        var y = parseInt((mousePos.y)/16);
-				pixel.updatePixelByClick(x,y, constants._GLOBAL_VALUES.lastBoardPrinted);
-        game.startStop(false);
+class Mouse {
 
-      }, false);
-};
-
-export function getMousePos(canvas, evt) {
-	var rect = canvas.getBoundingClientRect();
-	return {
-	  x: evt.clientX - rect.left,
-	  y: evt.clientY - rect.top
+	static createMouseDownListener() {
+		Canvas.getCanvas().addEventListener('mousedown', function(evt) {
+					var mousePos = Mouse.getMousePos(Canvas.getCanvas(), evt);
+					var x = parseInt((mousePos.x)/16);
+					var y = parseInt((mousePos.y)/16);
+					Pixel.updatePixelByClick(x,y, Constants._GLOBAL_VALUES.lastBoardPrinted);
+					Game.startStop(false);
+	
+				}, false);
 	};
-};
+	
+	static getMousePos(canvas, evt) {
+		var rect = canvas.getBoundingClientRect();
+		return {
+			x: evt.clientX - rect.left,
+			y: evt.clientY - rect.top
+		};
+	};
+}
+
+export {Mouse};

@@ -1,80 +1,89 @@
-import * as arrayUtil from './arrayUtil';
-import * as constants from './constants';
-import * as pixel from './pixel';
-import * as mouse from './mouse';
-import * as canvas from './canvas';
-import * as cell from './cell';
-import * as game from './game';
 
-export function GameBoard(columns,rows) {
-	this.columns= columns;
-	this.rows = rows;
-	this.board = null;
-	this.createBoard = function(){ 
-		this.board = populateBoard(arrayUtil.create2DArray(this.columns,this.rows),this.columns,this.rows);
+import {Cell} from './cell.js';
+import {Rule} from './rule.js';
+import {Pixel} from './pixel.js';
+import {Mouse} from './mouse.js';
+import {Canvas} from './canvas.js';
+import {ArrayUtil} from './arrayUtil.js';
+import {Constants} from './constants.js';
+
+class Board{
+
+	static GameBoard(x,y) {
+		return {
+			columns: x,
+			rows : y,
+			board : null,
+			createBoard : function(){ 
+				this.board = Board.populateBoard(ArrayUtil.create2DArray(this.columns,this.rows),this.columns,this.rows);
+			},
+			getInfoBoardGame : function() {return "Rows: "+this.rows + "; Columns: "+this.columns;}
+		};
+
 	};
-	this.getInfoBoardGame = function() {return "Rows: "+this.rows + "; Columns: "+this.columns;};
-};
 
-export function createGameBoard(columns,rows) {
-	var gameBoard = new GameBoard(columns,rows);
-	gameBoard.createBoard();
-	return gameBoard;
-};
+	static createGameBoard(columns,rows) {
+		var gameBoard = Board.GameBoard(columns,rows); 
+		gameBoard.createBoard();
+		return gameBoard;
+	};
 
-export function populateBoard(board,columns,rows) {
-	for (var i = 0; i < columns; i++) {
-		for (var j = 0; j < rows; j++) {
-			board[i][j] = cell.BuildCell(i,j);
-   		}	
-	}
-	return board;
-};
-
-export function showBoardGame(gameBoard) {
-	if(null != gameBoard) {
-		for (var i = 0; i < gameBoard.columns; i++) {
-			for (var j = 0; j < gameBoard.rows; j++) {
-				gameBoard.board[i][j].isAlive ? pixel.printPixel(i,j) :  pixel.clearPixel(i,j);
-	   		}
+	static populateBoard(board,columns,rows) {
+		for (var i = 0; i < columns; i++) {
+			for (var j = 0; j < rows; j++) {
+				board[i][j] = Cell.BuildCell(i,j);
+			}	
 		}
-	}
-};
+		return board;
+	};
 
-export function applyBoardRules(gameBoard) {
-	if(constants._GLOBAL_VALUES.run) {
-
-		var lastBoardPrinted = populateBoard(arrayUtil.create2DArray(gameBoard.columns,gameBoard.rows),gameBoard.columns,gameBoard.rows);		
-		var nextTimeBoard = populateBoard(arrayUtil.create2DArray(gameBoard.columns,gameBoard.rows),gameBoard.columns,gameBoard.rows);
-
-		for (var i = 0; i < gameBoard.columns; i++) {
-			for (var j = 0; j < gameBoard.rows; j++) {
-				var currentCell = gameBoard.board[i][j];
-				nextTimeBoard[i][j].isAlive = rule.applyCellRules(gameBoard,currentCell);
-				lastBoardPrinted[i][j].isAlive = nextTimeBoard[i][j].isAlive;			
-	   		}
+	static showBoardGame(gameBoard) {
+		if(null != gameBoard) {
+			for (var i = 0; i < gameBoard.columns; i++) {
+				for (var j = 0; j < gameBoard.rows; j++) {
+					gameBoard.board[i][j].isAlive ? Pixel.printPixel(i,j) :  Pixel.clearPixel(i,j);
+				}
+			}
 		}
+	};
 
-		constants._GLOBAL_VALUES.lastBoardPrinted = lastBoardPrinted;
-		gameBoard.board = nextTimeBoard;	
-		showBoardGame(gameBoard);
-		setTimeout( function() { applyBoardRules(gameBoard)  }  , constants._GLOBAL_VALUES.delayTime);
-	}
-	
-};
+	static applyBoardRules(gameBoard) {
+		if(Constants._GLOBAL_VALUES.run) {
+			var lastBoardPrinted = Board.populateBoard(ArrayUtil.create2DArray(gameBoard.columns,gameBoard.rows),gameBoard.columns,gameBoard.rows);		
+			var nextTimeBoard = Board.populateBoard(ArrayUtil.create2DArray(gameBoard.columns,gameBoard.rows),gameBoard.columns,gameBoard.rows);
 
-export function printBaseBoard(board){
-	canvas.showGrid();
-	mouse.createMouseDownListener();
-};
+			for (var i = 0; i < gameBoard.columns; i++) {
+				for (var j = 0; j < gameBoard.rows; j++) {
+					var currentCell = gameBoard.board[i][j];
+					nextTimeBoard[i][j].isAlive = Rule.applyCellRules(gameBoard,currentCell);
+					lastBoardPrinted[i][j].isAlive = nextTimeBoard[i][j].isAlive;			
+				}
+			}
 
-export function updateBoardFromLastBoardPrinted() {
-	if(null == constants._GLOBAL_VALUES.lastBoardPrinted) {
-		var gameBoard = constants._GLOBAL_VALUES.gameOfLifeBoard;
-		var rows = constants._GLOBAL_VALUES.gameOfLifeBoard.rows;
-		var columns = constants._GLOBAL_VALUES.gameOfLifeBoard.columns;
-		constants._GLOBAL_VALUES.lastBoardPrinted = populateBoard(arrayUtil.create2DArray(columns,rows),columns,rows);
-	}
-	constants._GLOBAL_VALUES.gameOfLifeBoard.board = constants._GLOBAL_VALUES.lastBoardPrinted;
-	showBoardGame(constants._GLOBAL_VALUES.gameOfLifeBoard);
-};
+			Constants._GLOBAL_VALUES.lastBoardPrinted = lastBoardPrinted;
+			gameBoard.board = nextTimeBoard;	
+			Board.showBoardGame(gameBoard);
+			setTimeout( function() { Board.applyBoardRules(gameBoard)  }  , Constants._GLOBAL_VALUES.delayTime);
+		}
+		
+	};
+
+	static printBaseBoard(board){
+		Canvas.showGrid();
+		Mouse.createMouseDownListener();
+	};
+
+	static updateBoardFromLastBoardPrinted() {
+		if(null == Constants._GLOBAL_VALUES.lastBoardPrinted) {
+			var gameBoard = Constants._GLOBAL_VALUES.gameOfLifeBoard;
+			var rows = Constants._GLOBAL_VALUES.gameOfLifeBoard.rows;
+			var columns = Constants._GLOBAL_VALUES.gameOfLifeBoard.columns;
+			Constants._GLOBAL_VALUES.lastBoardPrinted = Board.populateBoard(ArrayUtil.create2DArray(columns,rows),columns,rows);
+		}
+		Constants._GLOBAL_VALUES.gameOfLifeBoard.board = Constants._GLOBAL_VALUES.lastBoardPrinted;
+		Board.showBoardGame(Constants._GLOBAL_VALUES.gameOfLifeBoard);
+	};
+
+}
+
+export {Board};

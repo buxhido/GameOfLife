@@ -70,7 +70,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 0);
+/******/ 	return __webpack_require__(__webpack_require__.s = 2);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -83,44 +83,30 @@ return /******/ (function(modules) { // webpackBootstrap
 Object.defineProperty(exports, "__esModule", {
 	value: true
 });
-exports.launchGameOfLife = launchGameOfLife;
-exports.startStop = startStop;
-exports.resetBoard = resetBoard;
 
-var _constants = __webpack_require__(1);
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var constants = _interopRequireWildcard(_constants);
-
-var _board = __webpack_require__(4);
-
-var board = _interopRequireWildcard(_board);
-
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
-
-function launchGameOfLife() {
-	constants._GLOBAL_VALUES.gameOfLifeBoard = board.createGameBoard(15, 15);
-	board.showBoardGame(constants._GLOBAL_VALUES.gameOfLifeBoard);
-	startStop(false);
-	board.printBaseBoard(constants._GLOBAL_VALUES.gameOfLifeBoard.board);
+var Constants = function Constants() {
+	_classCallCheck(this, Constants);
 };
 
-function startStop(run) {
-	constants._GLOBAL_VALUES.run = run;
-
-	document.getElementById('playId').disabled = run;
-	document.getElementById('pauseId').disabled = !document.getElementById('playId').disabled;
-
-	if (run) {
-		board.applyBoardRules(constants._GLOBAL_VALUES.gameOfLifeBoard);
-	} else {
-		board.updateBoardFromLastBoardPrinted();
-	}
+Constants._GLOBAL_VALUES = {
+	delayTime: 200,
+	run: true,
+	gameOfLifeBoard: null,
+	lastBoardPrinted: null
 };
-
-function resetBoard() {
-	constants._GLOBAL_VALUES.lastBoardPrinted = null;
-	startStop(false);
+Constants._NEIGHBORS = {
+	NORTH_WEST: "NORTH_WEST",
+	NORTH: "NORTH",
+	NORTH_EAST: "NORTH_EAST",
+	EAST: "EAST",
+	SOUTH_EAST: "SOUTH_EAST",
+	SOUTH: "SOUTH",
+	SOUTH_WEST: "SOUTH_WEST",
+	WEST: "WEST"
 };
+exports.Constants = Constants;
 
 /***/ }),
 /* 1 */
@@ -132,15 +118,49 @@ function resetBoard() {
 Object.defineProperty(exports, "__esModule", {
 	value: true
 });
-var _GLOBAL_VALUES = exports._GLOBAL_VALUES = {
-	delayTime: 200,
-	run: true,
-	gameOfLifeBoard: null,
-	lastBoardPrinted: null
-};
 
-var _NEIGHBORS = exports._NEIGHBORS = { NORTH_WEST: "NORTH_WEST", NORTH: "NORTH", NORTH_EAST: "NORTH_EAST", EAST: "EAST",
-	SOUTH_EAST: "SOUTH_EAST", SOUTH: "SOUTH", SOUTH_WEST: "SOUTH_WEST", WEST: "WEST" };
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Canvas = function () {
+	function Canvas() {
+		_classCallCheck(this, Canvas);
+	}
+
+	_createClass(Canvas, null, [{
+		key: "showGrid",
+		value: function showGrid() {
+			var context = Canvas.getCanvasContext();
+			for (var x = 0.0; x <= 160; x += 16) {
+				context.moveTo(x, 0);
+				context.lineTo(x, 160);
+			}
+
+			for (var y = 0.0; y <= 160; y += 16) {
+				context.moveTo(0, y);
+				context.lineTo(160, y);
+			}
+
+			context.strokeStyle = "#000";
+			context.stroke();
+		}
+	}, {
+		key: "getCanvas",
+		value: function getCanvas() {
+			return document.getElementById("gameOfLifeCanvas");
+		}
+	}, {
+		key: "getCanvasContext",
+		value: function getCanvasContext() {
+			return Canvas.getCanvas().getContext("2d");
+		}
+	}]);
+
+	return Canvas;
+}();
+
+exports.Canvas = Canvas;
 
 /***/ }),
 /* 2 */
@@ -152,33 +172,54 @@ var _NEIGHBORS = exports._NEIGHBORS = { NORTH_WEST: "NORTH_WEST", NORTH: "NORTH"
 Object.defineProperty(exports, "__esModule", {
 	value: true
 });
-exports.showGrid = showGrid;
-exports.getCanvas = getCanvas;
-exports.getCanvasContext = getCanvasContext;
-function showGrid() {
+exports.Game = undefined;
 
-	var context = getCanvasContext();
-	for (var x = 0.0; x <= 160; x += 16) {
-		context.moveTo(x, 0);
-		context.lineTo(x, 160);
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _constants = __webpack_require__(0);
+
+var _board = __webpack_require__(5);
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Game = function () {
+	function Game() {
+		_classCallCheck(this, Game);
 	}
 
-	for (var y = 0.0; y <= 160; y += 16) {
-		context.moveTo(0, y);
-		context.lineTo(160, y);
-	}
+	_createClass(Game, null, [{
+		key: 'launchGameOfLife',
+		value: function launchGameOfLife() {
+			_constants.Constants._GLOBAL_VALUES.gameOfLifeBoard = _board.Board.createGameBoard(15, 15);
+			_board.Board.showBoardGame(_constants.Constants._GLOBAL_VALUES.gameOfLifeBoard);
+			Game.startStop(false);
+			_board.Board.printBaseBoard(_constants.Constants._GLOBAL_VALUES.gameOfLifeBoard.board);
+		}
+	}, {
+		key: 'startStop',
+		value: function startStop(run) {
+			_constants.Constants._GLOBAL_VALUES.run = run;
+			document.getElementById('playId').disabled = run;
+			document.getElementById('pauseId').disabled = !document.getElementById('playId').disabled;
 
-	context.strokeStyle = "#000";
-	context.stroke();
-};
+			if (run) {
+				_board.Board.applyBoardRules(_constants.Constants._GLOBAL_VALUES.gameOfLifeBoard);
+			} else {
+				_board.Board.updateBoardFromLastBoardPrinted();
+			}
+		}
+	}, {
+		key: 'resetBoard',
+		value: function resetBoard() {
+			_constants.Constants._GLOBAL_VALUES.lastBoardPrinted = null;
+			Game.startStop(false);
+		}
+	}]);
 
-function getCanvas() {
-	return document.getElementById("gameOfLifeCanvas");
-};
+	return Game;
+}();
 
-function getCanvasContext() {
-	return getCanvas().getContext("2d");
-};
+exports.Game = Game;
 
 /***/ }),
 /* 3 */
@@ -188,36 +229,41 @@ function getCanvasContext() {
 
 
 Object.defineProperty(exports, "__esModule", {
-    value: true
+	value: true
 });
-exports.printPixel = printPixel;
-exports.clearPixel = clearPixel;
-exports.updatePixelByClick = updatePixelByClick;
 
-var _canvas = __webpack_require__(2);
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var canvas = _interopRequireWildcard(_canvas);
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+var Cell = function () {
+	function Cell() {
+		_classCallCheck(this, Cell);
+	}
 
-function printPixel(x, y) {
-    cxt = canvas.getCanvasContext();
-    cxt.fillRect(x * 16 + 3, y * 16 + 3, 10, 10);
-};
+	_createClass(Cell, null, [{
+		key: "BuildCell",
+		value: function BuildCell(x, y) {
+			return {
+				isAlive: false,
+				x: x,
+				y: y,
+				getInfoCell: function getInfoCell() {
+					return "x: " + this.x + " - y: " + this.y + " - isAlive: " + this.isAlive;
+				}
+			};
+		}
+	}, {
+		key: "getCellByPossition",
+		value: function getCellByPossition(gameBoard, x_poss, y_poss) {
+			return gameBoard.board[x_poss][y_poss];
+		}
+	}]);
 
-function clearPixel(x, y) {
-    cxt = canvas.getCanvasContext();
-    cxt.clearRect(x * 16 + 3, y * 16 + 3, 10, 10);
-};
+	return Cell;
+}();
 
-function updatePixelByClick(x, y, board) {
-    board[x][y].isAlive = !board[x][y].isAlive;
-    if (board[x][y].isAlive) {
-        printPixel(x, y);
-    } else {
-        clearPixel(x, y);
-    }
-};
+exports.Cell = Cell;
 
 /***/ }),
 /* 4 */
@@ -227,121 +273,49 @@ function updatePixelByClick(x, y, board) {
 
 
 Object.defineProperty(exports, "__esModule", {
-	value: true
+    value: true
 });
-exports.GameBoard = GameBoard;
-exports.createGameBoard = createGameBoard;
-exports.populateBoard = populateBoard;
-exports.showBoardGame = showBoardGame;
-exports.applyBoardRules = applyBoardRules;
-exports.printBaseBoard = printBaseBoard;
-exports.updateBoardFromLastBoardPrinted = updateBoardFromLastBoardPrinted;
+exports.Pixel = undefined;
 
-var _arrayUtil = __webpack_require__(5);
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var arrayUtil = _interopRequireWildcard(_arrayUtil);
+var _canvas = __webpack_require__(1);
 
-var _constants = __webpack_require__(1);
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var constants = _interopRequireWildcard(_constants);
+var Pixel = function () {
+    function Pixel() {
+        _classCallCheck(this, Pixel);
+    }
 
-var _pixel = __webpack_require__(3);
+    _createClass(Pixel, null, [{
+        key: 'printPixel',
+        value: function printPixel(x, y) {
+            var cxt = _canvas.Canvas.getCanvasContext();
+            cxt.fillRect(x * 16 + 3, y * 16 + 3, 10, 10);
+        }
+    }, {
+        key: 'clearPixel',
+        value: function clearPixel(x, y) {
+            var cxt = _canvas.Canvas.getCanvasContext();
+            cxt.clearRect(x * 16 + 3, y * 16 + 3, 10, 10);
+        }
+    }, {
+        key: 'updatePixelByClick',
+        value: function updatePixelByClick(x, y, board) {
+            board[x][y].isAlive = !board[x][y].isAlive;
+            if (board[x][y].isAlive) {
+                Pixel.printPixel(x, y);
+            } else {
+                Pixel.clearPixel(x, y);
+            }
+        }
+    }]);
 
-var pixel = _interopRequireWildcard(_pixel);
+    return Pixel;
+}();
 
-var _mouse = __webpack_require__(6);
-
-var mouse = _interopRequireWildcard(_mouse);
-
-var _canvas = __webpack_require__(2);
-
-var canvas = _interopRequireWildcard(_canvas);
-
-var _cell = __webpack_require__(7);
-
-var cell = _interopRequireWildcard(_cell);
-
-var _game = __webpack_require__(0);
-
-var game = _interopRequireWildcard(_game);
-
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
-
-function GameBoard(columns, rows) {
-	this.columns = columns;
-	this.rows = rows;
-	this.board = null;
-	this.createBoard = function () {
-		this.board = populateBoard(arrayUtil.create2DArray(this.columns, this.rows), this.columns, this.rows);
-	};
-	this.getInfoBoardGame = function () {
-		return "Rows: " + this.rows + "; Columns: " + this.columns;
-	};
-};
-
-function createGameBoard(columns, rows) {
-	var gameBoard = new GameBoard(columns, rows);
-	gameBoard.createBoard();
-	return gameBoard;
-};
-
-function populateBoard(board, columns, rows) {
-	for (var i = 0; i < columns; i++) {
-		for (var j = 0; j < rows; j++) {
-			board[i][j] = cell.BuildCell(i, j);
-		}
-	}
-	return board;
-};
-
-function showBoardGame(gameBoard) {
-	if (null != gameBoard) {
-		for (var i = 0; i < gameBoard.columns; i++) {
-			for (var j = 0; j < gameBoard.rows; j++) {
-				gameBoard.board[i][j].isAlive ? pixel.printPixel(i, j) : pixel.clearPixel(i, j);
-			}
-		}
-	}
-};
-
-function applyBoardRules(gameBoard) {
-	if (constants._GLOBAL_VALUES.run) {
-
-		var lastBoardPrinted = populateBoard(arrayUtil.create2DArray(gameBoard.columns, gameBoard.rows), gameBoard.columns, gameBoard.rows);
-		var nextTimeBoard = populateBoard(arrayUtil.create2DArray(gameBoard.columns, gameBoard.rows), gameBoard.columns, gameBoard.rows);
-
-		for (var i = 0; i < gameBoard.columns; i++) {
-			for (var j = 0; j < gameBoard.rows; j++) {
-				var currentCell = gameBoard.board[i][j];
-				nextTimeBoard[i][j].isAlive = rule.applyCellRules(gameBoard, currentCell);
-				lastBoardPrinted[i][j].isAlive = nextTimeBoard[i][j].isAlive;
-			}
-		}
-
-		constants._GLOBAL_VALUES.lastBoardPrinted = lastBoardPrinted;
-		gameBoard.board = nextTimeBoard;
-		showBoardGame(gameBoard);
-		setTimeout(function () {
-			applyBoardRules(gameBoard);
-		}, constants._GLOBAL_VALUES.delayTime);
-	}
-};
-
-function printBaseBoard(board) {
-	canvas.showGrid();
-	mouse.createMouseDownListener();
-};
-
-function updateBoardFromLastBoardPrinted() {
-	if (null == constants._GLOBAL_VALUES.lastBoardPrinted) {
-		var gameBoard = constants._GLOBAL_VALUES.gameOfLifeBoard;
-		var rows = constants._GLOBAL_VALUES.gameOfLifeBoard.rows;
-		var columns = constants._GLOBAL_VALUES.gameOfLifeBoard.columns;
-		constants._GLOBAL_VALUES.lastBoardPrinted = populateBoard(arrayUtil.create2DArray(columns, rows), columns, rows);
-	}
-	constants._GLOBAL_VALUES.gameOfLifeBoard.board = constants._GLOBAL_VALUES.lastBoardPrinted;
-	showBoardGame(constants._GLOBAL_VALUES.gameOfLifeBoard);
-};
+exports.Pixel = Pixel;
 
 /***/ }),
 /* 5 */
@@ -353,14 +327,121 @@ function updateBoardFromLastBoardPrinted() {
 Object.defineProperty(exports, "__esModule", {
 	value: true
 });
-exports.create2DArray = create2DArray;
-function create2DArray(columns, rows) {
-	var x = new Array(columns);
-	for (var i = 0; i < columns; i++) {
-		x[i] = new Array(rows);
+exports.Board = undefined;
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _cell = __webpack_require__(3);
+
+var _rule = __webpack_require__(6);
+
+var _pixel = __webpack_require__(4);
+
+var _mouse = __webpack_require__(7);
+
+var _canvas = __webpack_require__(1);
+
+var _arrayUtil = __webpack_require__(8);
+
+var _constants = __webpack_require__(0);
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Board = function () {
+	function Board() {
+		_classCallCheck(this, Board);
 	}
-	return x;
-};
+
+	_createClass(Board, null, [{
+		key: 'GameBoard',
+		value: function GameBoard(x, y) {
+			return {
+				columns: x,
+				rows: y,
+				board: null,
+				createBoard: function createBoard() {
+					this.board = Board.populateBoard(_arrayUtil.ArrayUtil.create2DArray(this.columns, this.rows), this.columns, this.rows);
+				},
+				getInfoBoardGame: function getInfoBoardGame() {
+					return "Rows: " + this.rows + "; Columns: " + this.columns;
+				}
+			};
+		}
+	}, {
+		key: 'createGameBoard',
+		value: function createGameBoard(columns, rows) {
+			var gameBoard = Board.GameBoard(columns, rows);
+			gameBoard.createBoard();
+			return gameBoard;
+		}
+	}, {
+		key: 'populateBoard',
+		value: function populateBoard(board, columns, rows) {
+			for (var i = 0; i < columns; i++) {
+				for (var j = 0; j < rows; j++) {
+					board[i][j] = _cell.Cell.BuildCell(i, j);
+				}
+			}
+			return board;
+		}
+	}, {
+		key: 'showBoardGame',
+		value: function showBoardGame(gameBoard) {
+			if (null != gameBoard) {
+				for (var i = 0; i < gameBoard.columns; i++) {
+					for (var j = 0; j < gameBoard.rows; j++) {
+						gameBoard.board[i][j].isAlive ? _pixel.Pixel.printPixel(i, j) : _pixel.Pixel.clearPixel(i, j);
+					}
+				}
+			}
+		}
+	}, {
+		key: 'applyBoardRules',
+		value: function applyBoardRules(gameBoard) {
+			if (_constants.Constants._GLOBAL_VALUES.run) {
+				var lastBoardPrinted = Board.populateBoard(_arrayUtil.ArrayUtil.create2DArray(gameBoard.columns, gameBoard.rows), gameBoard.columns, gameBoard.rows);
+				var nextTimeBoard = Board.populateBoard(_arrayUtil.ArrayUtil.create2DArray(gameBoard.columns, gameBoard.rows), gameBoard.columns, gameBoard.rows);
+
+				for (var i = 0; i < gameBoard.columns; i++) {
+					for (var j = 0; j < gameBoard.rows; j++) {
+						var currentCell = gameBoard.board[i][j];
+						nextTimeBoard[i][j].isAlive = _rule.Rule.applyCellRules(gameBoard, currentCell);
+						lastBoardPrinted[i][j].isAlive = nextTimeBoard[i][j].isAlive;
+					}
+				}
+
+				_constants.Constants._GLOBAL_VALUES.lastBoardPrinted = lastBoardPrinted;
+				gameBoard.board = nextTimeBoard;
+				Board.showBoardGame(gameBoard);
+				setTimeout(function () {
+					Board.applyBoardRules(gameBoard);
+				}, _constants.Constants._GLOBAL_VALUES.delayTime);
+			}
+		}
+	}, {
+		key: 'printBaseBoard',
+		value: function printBaseBoard(board) {
+			_canvas.Canvas.showGrid();
+			_mouse.Mouse.createMouseDownListener();
+		}
+	}, {
+		key: 'updateBoardFromLastBoardPrinted',
+		value: function updateBoardFromLastBoardPrinted() {
+			if (null == _constants.Constants._GLOBAL_VALUES.lastBoardPrinted) {
+				var gameBoard = _constants.Constants._GLOBAL_VALUES.gameOfLifeBoard;
+				var rows = _constants.Constants._GLOBAL_VALUES.gameOfLifeBoard.rows;
+				var columns = _constants.Constants._GLOBAL_VALUES.gameOfLifeBoard.columns;
+				_constants.Constants._GLOBAL_VALUES.lastBoardPrinted = Board.populateBoard(_arrayUtil.ArrayUtil.create2DArray(columns, rows), columns, rows);
+			}
+			_constants.Constants._GLOBAL_VALUES.gameOfLifeBoard.board = _constants.Constants._GLOBAL_VALUES.lastBoardPrinted;
+			Board.showBoardGame(_constants.Constants._GLOBAL_VALUES.gameOfLifeBoard);
+		}
+	}]);
+
+	return Board;
+}();
+
+exports.Board = Board;
 
 /***/ }),
 /* 6 */
@@ -372,44 +453,96 @@ function create2DArray(columns, rows) {
 Object.defineProperty(exports, "__esModule", {
 	value: true
 });
-exports.createMouseDownListener = createMouseDownListener;
-exports.getMousePos = getMousePos;
+exports.Rule = undefined;
 
-var _pixel = __webpack_require__(3);
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var pixel = _interopRequireWildcard(_pixel);
+var _constants = __webpack_require__(0);
 
-var _constants = __webpack_require__(1);
+var _cell = __webpack_require__(3);
 
-var constants = _interopRequireWildcard(_constants);
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var _game = __webpack_require__(0);
+var Rule = function () {
+	function Rule() {
+		_classCallCheck(this, Rule);
+	}
 
-var game = _interopRequireWildcard(_game);
+	_createClass(Rule, null, [{
+		key: 'applyCellRules',
+		value: function applyCellRules(gameBoard, point) {
+			var isAlive = false;
+			var neighborsAlive = 0;
 
-var _canvas = __webpack_require__(2);
+			for (var neighbor in _constants.Constants._NEIGHBORS) {
+				if (Rule.isNeighborAlive(gameBoard, point, _constants.Constants._NEIGHBORS[neighbor])) {
+					neighborsAlive++;
+				}
+			}
 
-var canvas = _interopRequireWildcard(_canvas);
+			if (point.isAlive && (neighborsAlive == 2 || neighborsAlive == 3)) {
+				isAlive = true;
+			} else if (!point.isAlive && neighborsAlive == 3) {
+				isAlive = true;
+			}
+			return isAlive;
+		}
+	}, {
+		key: 'isNeighborAlive',
+		value: function isNeighborAlive(gameBoard, point, neighborType) {
+			var isAlive = false;
+			switch (neighborType) {
+				case _constants.Constants._NEIGHBORS.NORTH_WEST:
+					if (point.x > 0 && point.y > 0) {
+						isAlive = _cell.Cell.getCellByPossition(gameBoard, point.x - 1, point.y - 1).isAlive;
+					}
+					break;
+				case _constants.Constants._NEIGHBORS.NORTH:
+					if (point.y > 0) {
+						isAlive = _cell.Cell.getCellByPossition(gameBoard, point.x, point.y - 1).isAlive;
+					}
+					break;
+				case _constants.Constants._NEIGHBORS.NORTH_EAST:
+					if (point.x < gameBoard.columns - 1 && point.y > 0) {
+						isAlive = _cell.Cell.getCellByPossition(gameBoard, point.x + 1, point.y - 1).isAlive;
+					}
+					break;
+				case _constants.Constants._NEIGHBORS.EAST:
+					if (point.x < gameBoard.columns - 1) {
+						isAlive = _cell.Cell.getCellByPossition(gameBoard, point.x + 1, point.y).isAlive;
+					}
+					break;
+				case _constants.Constants._NEIGHBORS.SOUTH_EAST:
+					if (point.x < gameBoard.columns - 1 && point.y < gameBoard.rows - 1) {
+						isAlive = _cell.Cell.getCellByPossition(gameBoard, point.x + 1, point.y + 1).isAlive;
+					}
+					break;
+				case _constants.Constants._NEIGHBORS.SOUTH:
+					if (point.y < gameBoard.rows - 1) {
+						isAlive = _cell.Cell.getCellByPossition(gameBoard, point.x, point.y + 1).isAlive;
+					}
+					break;
+				case _constants.Constants._NEIGHBORS.SOUTH_WEST:
+					if (point.x > 0 && point.y < gameBoard.rows - 1) {
+						isAlive = _cell.Cell.getCellByPossition(gameBoard, point.x - 1, point.y + 1).isAlive;
+					}
+					break;
+				case _constants.Constants._NEIGHBORS.WEST:
+					if (point.x > 0) {
+						isAlive = _cell.Cell.getCellByPossition(gameBoard, point.x - 1, point.y).isAlive;
+					}
+					break;
+				default:
+					isAlive = false;
+			}
+			return isAlive;
+		}
+	}]);
 
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+	return Rule;
+}();
 
-function createMouseDownListener() {
-	canvas.getCanvas().addEventListener('mousedown', function (evt) {
-		var mousePos = getMousePos(canvas.getCanvas(), evt);
-		var x = parseInt(mousePos.x / 16);
-		var y = parseInt(mousePos.y / 16);
-		pixel.updatePixelByClick(x, y, constants._GLOBAL_VALUES.lastBoardPrinted);
-		game.startStop(false);
-	}, false);
-};
-
-function getMousePos(canvas, evt) {
-	var rect = canvas.getBoundingClientRect();
-	return {
-		x: evt.clientX - rect.left,
-		y: evt.clientY - rect.top
-	};
-};
+exports.Rule = Rule;
 
 /***/ }),
 /* 7 */
@@ -421,23 +554,89 @@ function getMousePos(canvas, evt) {
 Object.defineProperty(exports, "__esModule", {
 	value: true
 });
-exports.BuildCell = BuildCell;
-exports.getCellByPossition = getCellByPossition;
-function BuildCell(x, y) {
-	return new function () {
+exports.Mouse = undefined;
 
-		this.isAlive = false;
-		this.x = x;
-		this.y = y;
-		this.getInfoCell = function () {
-			return "x: " + this.x + " - y: " + this.y + " - isAlive: " + this.isAlive;
-		};
-	}();
-};
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-function getCellByPossition(gameBoard, x_poss, y_poss) {
-	return gameBoard.board[x_poss][y_poss];
-};
+var _game = __webpack_require__(2);
+
+var _pixel = __webpack_require__(4);
+
+var _canvas = __webpack_require__(1);
+
+var _constants = __webpack_require__(0);
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Mouse = function () {
+	function Mouse() {
+		_classCallCheck(this, Mouse);
+	}
+
+	_createClass(Mouse, null, [{
+		key: 'createMouseDownListener',
+		value: function createMouseDownListener() {
+			_canvas.Canvas.getCanvas().addEventListener('mousedown', function (evt) {
+				var mousePos = Mouse.getMousePos(_canvas.Canvas.getCanvas(), evt);
+				var x = parseInt(mousePos.x / 16);
+				var y = parseInt(mousePos.y / 16);
+				_pixel.Pixel.updatePixelByClick(x, y, _constants.Constants._GLOBAL_VALUES.lastBoardPrinted);
+				_game.Game.startStop(false);
+			}, false);
+		}
+	}, {
+		key: 'getMousePos',
+		value: function getMousePos(canvas, evt) {
+			var rect = canvas.getBoundingClientRect();
+			return {
+				x: evt.clientX - rect.left,
+				y: evt.clientY - rect.top
+			};
+		}
+	}]);
+
+	return Mouse;
+}();
+
+exports.Mouse = Mouse;
+
+/***/ }),
+/* 8 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var ArrayUtil = function () {
+	function ArrayUtil() {
+		_classCallCheck(this, ArrayUtil);
+	}
+
+	_createClass(ArrayUtil, null, [{
+		key: "create2DArray",
+		value: function create2DArray(columns, rows) {
+			var x = new Array(columns);
+			for (var i = 0; i < columns; i++) {
+				x[i] = new Array(rows);
+			}
+			return x;
+		}
+	}]);
+
+	return ArrayUtil;
+}();
+
+;
+
+exports.ArrayUtil = ArrayUtil;
 
 /***/ })
 /******/ ]);
