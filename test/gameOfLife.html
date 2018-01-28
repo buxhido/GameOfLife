@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+    <html>
+        <head>
+            <meta charset="UTF-8">
+            <meta http-equiv="X-UA-Compatible" content="IE=EDGE"/>
+            <title>Game of life</title>
+            <script src="../dist/game-of-life.js"></script>
+
+        </head>
+
+        <body onload="javascript:EntryPoint.Game.launchGameOfLife();"></body>
+		
+		<canvas id="gameOfLifeCanvas" width="160" height="160">
+		</canvas>
+        <br><br>
+        <button type="button" id="playId" onClick="javascript: EntryPoint.Game.startStop(true);">Play</button>
+        <button type="button" id="pauseId" onClick="javascript: EntryPoint.Game.startStop(false);">Pause</button>
+        <button type="button" id="resetId" onClick="javascript: EntryPoint.Game.resetBoard();">Reset</button>
+
+    </html>
