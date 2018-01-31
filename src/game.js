@@ -3,8 +3,9 @@ import {Board} from './board.js';
 
 class Game {
 
-	static launchGameOfLife() {
-		Constants._GLOBAL_VALUES.gameOfLifeBoard = Board.createGameBoard(15,15);
+	static launchGameOfLife(settings) {
+		Game.SetSettings(settings);
+		Constants._GLOBAL_VALUES.gameOfLifeBoard = Board.createGameBoard();
 		Board.showBoardGame(Constants._GLOBAL_VALUES.gameOfLifeBoard);
 		Game.startStop(false);
 		Board.printBaseBoard(Constants._GLOBAL_VALUES.gameOfLifeBoard.board);
@@ -12,8 +13,8 @@ class Game {
 	
 	static startStop(run) {
 		Constants._GLOBAL_VALUES.run = run;	
-		document.getElementById('playId').disabled = run;
-		document.getElementById('pauseId').disabled = !document.getElementById('playId').disabled;
+		document.getElementById(Constants._SETTINGS.playButton_id).disabled = run;
+		document.getElementById(Constants._SETTINGS.pauseButton_id).disabled = !document.getElementById(Constants._SETTINGS.playButton_id).disabled;
 	
 		if(run) {
 			Board.applyBoardRules(Constants._GLOBAL_VALUES.gameOfLifeBoard);
@@ -26,6 +27,11 @@ class Game {
 		Constants._GLOBAL_VALUES.lastBoardPrinted = null;
 		Game.startStop(false);	
 	};
+
+	static SetSettings(settings) {
+		Object.keys(settings).forEach(key => Constants._SETTINGS[key] = settings[key]);
+	}
+
 }
 
 export {Game};

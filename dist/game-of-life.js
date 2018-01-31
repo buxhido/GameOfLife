@@ -91,10 +91,18 @@ var Constants = function Constants() {
 };
 
 Constants._GLOBAL_VALUES = {
-	delayTime: 200,
 	run: true,
 	gameOfLifeBoard: null,
 	lastBoardPrinted: null
+};
+Constants._SETTINGS = {
+	canvas_id: null,
+	playButton_id: null,
+	pauseButton_id: null,
+	numberOfCells: 20,
+	cellSizePixel: 15,
+	margin: 3,
+	delayTime: 200
 };
 Constants._NEIGHBORS = {
 	NORTH_WEST: "NORTH_WEST",
@@ -118,8 +126,11 @@ exports.Constants = Constants;
 Object.defineProperty(exports, "__esModule", {
 	value: true
 });
+exports.Canvas = undefined;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _constants = __webpack_require__(0);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -131,29 +142,48 @@ var Canvas = function () {
 	_createClass(Canvas, null, [{
 		key: "showGrid",
 		value: function showGrid() {
+
+			Canvas.updateCanvasDimensions();
+
 			var context = Canvas.getCanvasContext();
-			for (var x = 0.0; x <= 160; x += 16) {
+			for (var x = 0.0; x <= Canvas.getWidth(); x += Canvas.getDelta()) {
 				context.moveTo(x, 0);
-				context.lineTo(x, 160);
+				context.lineTo(x, Canvas.getWidth());
 			}
 
-			for (var y = 0.0; y <= 160; y += 16) {
+			for (var y = 0.0; y <= Canvas.getWidth(); y += Canvas.getDelta()) {
 				context.moveTo(0, y);
-				context.lineTo(160, y);
+				context.lineTo(Canvas.getWidth(), y);
 			}
 
 			context.strokeStyle = "#000";
 			context.stroke();
 		}
 	}, {
+		key: "updateCanvasDimensions",
+		value: function updateCanvasDimensions() {
+			document.getElementById(_constants.Constants._SETTINGS.canvas_id).width = Canvas.getWidth() + 1;
+			document.getElementById(_constants.Constants._SETTINGS.canvas_id).height = Canvas.getWidth() + 1;
+		}
+	}, {
 		key: "getCanvas",
 		value: function getCanvas() {
-			return document.getElementById("gameOfLifeCanvas");
+			return document.getElementById(_constants.Constants._SETTINGS.canvas_id);
 		}
 	}, {
 		key: "getCanvasContext",
 		value: function getCanvasContext() {
 			return Canvas.getCanvas().getContext("2d");
+		}
+	}, {
+		key: "getWidth",
+		value: function getWidth() {
+			return Canvas.getDelta() * _constants.Constants._SETTINGS.numberOfCells;
+		}
+	}, {
+		key: "getDelta",
+		value: function getDelta() {
+			return _constants.Constants._SETTINGS.cellSizePixel + _constants.Constants._SETTINGS.margin;
 		}
 	}]);
 
@@ -189,8 +219,9 @@ var Game = function () {
 
 	_createClass(Game, null, [{
 		key: 'launchGameOfLife',
-		value: function launchGameOfLife() {
-			_constants.Constants._GLOBAL_VALUES.gameOfLifeBoard = _board.Board.createGameBoard(15, 15);
+		value: function launchGameOfLife(settings) {
+			Game.SetSettings(settings);
+			_constants.Constants._GLOBAL_VALUES.gameOfLifeBoard = _board.Board.createGameBoard();
 			_board.Board.showBoardGame(_constants.Constants._GLOBAL_VALUES.gameOfLifeBoard);
 			Game.startStop(false);
 			_board.Board.printBaseBoard(_constants.Constants._GLOBAL_VALUES.gameOfLifeBoard.board);
@@ -199,8 +230,8 @@ var Game = function () {
 		key: 'startStop',
 		value: function startStop(run) {
 			_constants.Constants._GLOBAL_VALUES.run = run;
-			document.getElementById('playId').disabled = run;
-			document.getElementById('pauseId').disabled = !document.getElementById('playId').disabled;
+			document.getElementById(_constants.Constants._SETTINGS.playButton_id).disabled = run;
+			document.getElementById(_constants.Constants._SETTINGS.pauseButton_id).disabled = !document.getElementById(_constants.Constants._SETTINGS.playButton_id).disabled;
 
 			if (run) {
 				_board.Board.applyBoardRules(_constants.Constants._GLOBAL_VALUES.gameOfLifeBoard);
@@ -213,6 +244,13 @@ var Game = function () {
 		value: function resetBoard() {
 			_constants.Constants._GLOBAL_VALUES.lastBoardPrinted = null;
 			Game.startStop(false);
+		}
+	}, {
+		key: 'SetSettings',
+		value: function SetSettings(settings) {
+			Object.keys(settings).forEach(function (key) {
+				return _constants.Constants._SETTINGS[key] = settings[key];
+			});
 		}
 	}]);
 
@@ -247,10 +285,7 @@ var Cell = function () {
 			return {
 				isAlive: false,
 				x: x,
-				y: y,
-				getInfoCell: function getInfoCell() {
-					return "x: " + this.x + " - y: " + this.y + " - isAlive: " + this.isAlive;
-				}
+				y: y
 			};
 		}
 	}, {
@@ -281,6 +316,8 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 var _canvas = __webpack_require__(1);
 
+var _constants = __webpack_require__(0);
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var Pixel = function () {
@@ -292,13 +329,13 @@ var Pixel = function () {
         key: 'printPixel',
         value: function printPixel(x, y) {
             var cxt = _canvas.Canvas.getCanvasContext();
-            cxt.fillRect(x * 16 + 3, y * 16 + 3, 10, 10);
+            cxt.fillRect(x * _canvas.Canvas.getDelta() + _constants.Constants._SETTINGS.margin, y * _canvas.Canvas.getDelta() + _constants.Constants._SETTINGS.margin, _constants.Constants._SETTINGS.cellSizePixel - _constants.Constants._SETTINGS.margin, _constants.Constants._SETTINGS.cellSizePixel - _constants.Constants._SETTINGS.margin);
         }
     }, {
         key: 'clearPixel',
         value: function clearPixel(x, y) {
             var cxt = _canvas.Canvas.getCanvasContext();
-            cxt.clearRect(x * 16 + 3, y * 16 + 3, 10, 10);
+            cxt.clearRect(x * _canvas.Canvas.getDelta() + _constants.Constants._SETTINGS.margin, y * _canvas.Canvas.getDelta() + _constants.Constants._SETTINGS.margin, _constants.Constants._SETTINGS.cellSizePixel - _constants.Constants._SETTINGS.margin, _constants.Constants._SETTINGS.cellSizePixel - _constants.Constants._SETTINGS.margin);
         }
     }, {
         key: 'updatePixelByClick',
@@ -354,23 +391,20 @@ var Board = function () {
 
 	_createClass(Board, null, [{
 		key: 'GameBoard',
-		value: function GameBoard(x, y) {
+		value: function GameBoard() {
 			return {
-				columns: x,
-				rows: y,
+				columns: _constants.Constants._SETTINGS.numberOfCells,
+				rows: _constants.Constants._SETTINGS.numberOfCells,
 				board: null,
 				createBoard: function createBoard() {
 					this.board = Board.populateBoard(_arrayUtil.ArrayUtil.create2DArray(this.columns, this.rows), this.columns, this.rows);
-				},
-				getInfoBoardGame: function getInfoBoardGame() {
-					return "Rows: " + this.rows + "; Columns: " + this.columns;
 				}
 			};
 		}
 	}, {
 		key: 'createGameBoard',
-		value: function createGameBoard(columns, rows) {
-			var gameBoard = Board.GameBoard(columns, rows);
+		value: function createGameBoard() {
+			var gameBoard = Board.GameBoard();
 			gameBoard.createBoard();
 			return gameBoard;
 		}
@@ -415,7 +449,7 @@ var Board = function () {
 				Board.showBoardGame(gameBoard);
 				setTimeout(function () {
 					Board.applyBoardRules(gameBoard);
-				}, _constants.Constants._GLOBAL_VALUES.delayTime);
+				}, _constants.Constants._SETTINGS.delayTime);
 			}
 		}
 	}, {
@@ -578,8 +612,8 @@ var Mouse = function () {
 		value: function createMouseDownListener() {
 			_canvas.Canvas.getCanvas().addEventListener('mousedown', function (evt) {
 				var mousePos = Mouse.getMousePos(_canvas.Canvas.getCanvas(), evt);
-				var x = parseInt(mousePos.x / 16);
-				var y = parseInt(mousePos.y / 16);
+				var x = parseInt(mousePos.x / _canvas.Canvas.getDelta());
+				var y = parseInt(mousePos.y / _canvas.Canvas.getDelta());
 				_pixel.Pixel.updatePixelByClick(x, y, _constants.Constants._GLOBAL_VALUES.lastBoardPrinted);
 				_game.Game.startStop(false);
 			}, false);

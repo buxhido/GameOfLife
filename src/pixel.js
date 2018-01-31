@@ -1,15 +1,24 @@
 import {Canvas} from './canvas.js';
+import {Constants} from './constants.js';
 
 class Pixel{
 
     static printPixel(x,y) {
         let cxt = Canvas.getCanvasContext();
-        cxt.fillRect((x*16)+3, (y*16)+3, 10, 10);
+        cxt.fillRect(
+            (x* Canvas.getDelta())+Constants._SETTINGS.margin, 
+            (y* Canvas.getDelta())+Constants._SETTINGS.margin, 
+            Constants._SETTINGS.cellSizePixel - Constants._SETTINGS.margin, 
+            Constants._SETTINGS.cellSizePixel - Constants._SETTINGS.margin);
     };
     
     static clearPixel(x,y) {
         let cxt = Canvas.getCanvasContext();
-        cxt.clearRect((x*16)+3, (y*16)+3, 10, 10);
+        cxt.clearRect(
+            (x* Canvas.getDelta())+Constants._SETTINGS.margin, 
+            (y* Canvas.getDelta())+Constants._SETTINGS.margin, 
+            Constants._SETTINGS.cellSizePixel - Constants._SETTINGS.margin , 
+            Constants._SETTINGS.cellSizePixel - Constants._SETTINGS.margin);
     };
     
     static updatePixelByClick(x,y,board) {
