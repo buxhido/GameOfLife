@@ -1,10 +1,19 @@
 class Constants{
 	
 	static _GLOBAL_VALUES = {
-		delayTime:200,
 		run: true,
 		gameOfLifeBoard : null,
 		lastBoardPrinted: null
+	};
+
+	static _SETTINGS = {
+		canvas_id: null,
+		playButton_id: null,
+		pauseButton_id: null,
+		numberOfCells: 20,
+		cellSizePixel: 15,
+		margin: 3,
+		delayTime:200
 	};
 
 	static _NEIGHBORS = {  

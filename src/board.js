@@ -9,21 +9,20 @@ import {Constants} from './constants.js';
 
 class Board{
 
-	static GameBoard(x,y) {
+	static GameBoard() {
 		return {
-			columns: x,
-			rows : y,
+			columns: Constants._SETTINGS.numberOfCells,
+			rows : Constants._SETTINGS.numberOfCells,
 			board : null,
 			createBoard : function(){ 
 				this.board = Board.populateBoard(ArrayUtil.create2DArray(this.columns,this.rows),this.columns,this.rows);
-			},
-			getInfoBoardGame : function() {return "Rows: "+this.rows + "; Columns: "+this.columns;}
+			}
 		};
 
 	};
 
-	static createGameBoard(columns,rows) {
-		var gameBoard = Board.GameBoard(columns,rows); 
+	static createGameBoard() {
+		var gameBoard = Board.GameBoard(); 
 		gameBoard.createBoard();
 		return gameBoard;
 	};
@@ -63,7 +62,7 @@ class Board{
 			Constants._GLOBAL_VALUES.lastBoardPrinted = lastBoardPrinted;
 			gameBoard.board = nextTimeBoard;	
 			Board.showBoardGame(gameBoard);
-			setTimeout( function() { Board.applyBoardRules(gameBoard)  }  , Constants._GLOBAL_VALUES.delayTime);
+			setTimeout( function() { Board.applyBoardRules(gameBoard)  }  , Constants._SETTINGS.delayTime);
 		}
 		
 	};
