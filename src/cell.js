@@ -5,8 +5,7 @@ class Cell{
 		return {
 			isAlive : false,
 			x : x,
-			y : y,
-			getInfoCell : function() {return "x: "+this.x+" - y: "+this.y+ " - isAlive: "+this.isAlive}
+			y : y
 		}
 	};
 	

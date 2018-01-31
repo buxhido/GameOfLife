@@ -8,8 +8,8 @@ class Mouse {
 	static createMouseDownListener() {
 		Canvas.getCanvas().addEventListener('mousedown', function(evt) {
 					var mousePos = Mouse.getMousePos(Canvas.getCanvas(), evt);
-					var x = parseInt((mousePos.x)/16);
-					var y = parseInt((mousePos.y)/16);
+					var x = parseInt((mousePos.x)/Canvas.getDelta());
+					var y = parseInt((mousePos.y)/Canvas.getDelta());
 					Pixel.updatePixelByClick(x,y, Constants._GLOBAL_VALUES.lastBoardPrinted);
 					Game.startStop(false);
 	
