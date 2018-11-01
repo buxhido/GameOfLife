@@ -126,71 +126,54 @@ exports.Constants = Constants;
 Object.defineProperty(exports, "__esModule", {
 	value: true
 });
-exports.Canvas = undefined;
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+exports.ShowGrid = ShowGrid;
+exports.UpdateCanvasDimensions = UpdateCanvasDimensions;
+exports.GetCanvas = GetCanvas;
+exports.GetCanvasContext = GetCanvasContext;
+exports.GetWidth = GetWidth;
+exports.GetDelta = GetDelta;
 
 var _constants = __webpack_require__(0);
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+function ShowGrid() {
 
-var Canvas = function () {
-	function Canvas() {
-		_classCallCheck(this, Canvas);
+	UpdateCanvasDimensions();
+
+	var context = GetCanvasContext();
+	for (var x = 0.0; x <= GetWidth(); x += GetDelta()) {
+		context.moveTo(x, 0);
+		context.lineTo(x, GetWidth());
 	}
 
-	_createClass(Canvas, null, [{
-		key: "showGrid",
-		value: function showGrid() {
+	for (var y = 0.0; y <= GetWidth(); y += GetDelta()) {
+		context.moveTo(0, y);
+		context.lineTo(GetWidth(), y);
+	}
 
-			Canvas.updateCanvasDimensions();
+	context.strokeStyle = "#000";
+	context.stroke();
+}
 
-			var context = Canvas.getCanvasContext();
-			for (var x = 0.0; x <= Canvas.getWidth(); x += Canvas.getDelta()) {
-				context.moveTo(x, 0);
-				context.lineTo(x, Canvas.getWidth());
-			}
+function UpdateCanvasDimensions() {
+	document.getElementById(_constants.Constants._SETTINGS.canvas_id).width = GetWidth() + 1;
+	document.getElementById(_constants.Constants._SETTINGS.canvas_id).height = GetWidth() + 1;
+}
 
-			for (var y = 0.0; y <= Canvas.getWidth(); y += Canvas.getDelta()) {
-				context.moveTo(0, y);
-				context.lineTo(Canvas.getWidth(), y);
-			}
+function GetCanvas() {
+	return document.getElementById(_constants.Constants._SETTINGS.canvas_id);
+}
 
-			context.strokeStyle = "#000";
-			context.stroke();
-		}
-	}, {
-		key: "updateCanvasDimensions",
-		value: function updateCanvasDimensions() {
-			document.getElementById(_constants.Constants._SETTINGS.canvas_id).width = Canvas.getWidth() + 1;
-			document.getElementById(_constants.Constants._SETTINGS.canvas_id).height = Canvas.getWidth() + 1;
-		}
-	}, {
-		key: "getCanvas",
-		value: function getCanvas() {
-			return document.getElementById(_constants.Constants._SETTINGS.canvas_id);
-		}
-	}, {
-		key: "getCanvasContext",
-		value: function getCanvasContext() {
-			return Canvas.getCanvas().getContext("2d");
-		}
-	}, {
-		key: "getWidth",
-		value: function getWidth() {
-			return Canvas.getDelta() * _constants.Constants._SETTINGS.numberOfCells;
-		}
-	}, {
-		key: "getDelta",
-		value: function getDelta() {
-			return _constants.Constants._SETTINGS.cellSizePixel + _constants.Constants._SETTINGS.margin;
-		}
-	}]);
+function GetCanvasContext() {
+	return GetCanvas().getContext("2d");
+}
 
-	return Canvas;
-}();
+function GetWidth() {
+	return GetDelta() * _constants.Constants._SETTINGS.numberOfCells;
+}
 
-exports.Canvas = Canvas;
+function GetDelta() {
+	return _constants.Constants._SETTINGS.cellSizePixel + _constants.Constants._SETTINGS.margin;
+}
 
 /***/ }),
 /* 2 */
@@ -210,6 +193,10 @@ var _constants = __webpack_require__(0);
 
 var _board = __webpack_require__(5);
 
+var Board = _interopRequireWildcard(_board);
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var Game = function () {
@@ -221,10 +208,10 @@ var Game = function () {
 		key: 'launchGameOfLife',
 		value: function launchGameOfLife(settings) {
 			Game.SetSettings(settings);
-			_constants.Constants._GLOBAL_VALUES.gameOfLifeBoard = _board.Board.createGameBoard();
-			_board.Board.showBoardGame(_constants.Constants._GLOBAL_VALUES.gameOfLifeBoard);
+			_constants.Constants._GLOBAL_VALUES.gameOfLifeBoard = Board.CreateGameBoard();
+			Board.ShowBoardGame(_constants.Constants._GLOBAL_VALUES.gameOfLifeBoard);
 			Game.startStop(false);
-			_board.Board.printBaseBoard(_constants.Constants._GLOBAL_VALUES.gameOfLifeBoard.board);
+			Board.PrintBaseBoard(_constants.Constants._GLOBAL_VALUES.gameOfLifeBoard.board);
 		}
 	}, {
 		key: 'startStop',
@@ -234,9 +221,9 @@ var Game = function () {
 			document.getElementById(_constants.Constants._SETTINGS.pauseButton_id).disabled = !document.getElementById(_constants.Constants._SETTINGS.playButton_id).disabled;
 
 			if (run) {
-				_board.Board.applyBoardRules(_constants.Constants._GLOBAL_VALUES.gameOfLifeBoard);
+				Board.ApplyBoardRules(_constants.Constants._GLOBAL_VALUES.gameOfLifeBoard);
 			} else {
-				_board.Board.updateBoardFromLastBoardPrinted();
+				Board.UpdateBoardFromLastBoardPrinted();
 			}
 		}
 	}, {
@@ -269,36 +256,19 @@ exports.Game = Game;
 Object.defineProperty(exports, "__esModule", {
 	value: true
 });
+exports.BuildCell = BuildCell;
+exports.GetCellByPossition = GetCellByPossition;
+function BuildCell(x, y) {
+	return {
+		isAlive: false,
+		x: x,
+		y: y
+	};
+}
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var Cell = function () {
-	function Cell() {
-		_classCallCheck(this, Cell);
-	}
-
-	_createClass(Cell, null, [{
-		key: "BuildCell",
-		value: function BuildCell(x, y) {
-			return {
-				isAlive: false,
-				x: x,
-				y: y
-			};
-		}
-	}, {
-		key: "getCellByPossition",
-		value: function getCellByPossition(gameBoard, x_poss, y_poss) {
-			return gameBoard.board[x_poss][y_poss];
-		}
-	}]);
-
-	return Cell;
-}();
-
-exports.Cell = Cell;
+function GetCellByPossition(gameBoard, x_poss, y_poss) {
+	return gameBoard.board[x_poss][y_poss];
+}
 
 /***/ }),
 /* 4 */
@@ -310,49 +280,32 @@ exports.Cell = Cell;
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-exports.Pixel = undefined;
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+exports.PrintPixel = PrintPixel;
+exports.ClearPixel = ClearPixel;
+exports.UpdatePixelByClick = UpdatePixelByClick;
 
 var _canvas = __webpack_require__(1);
 
 var _constants = __webpack_require__(0);
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+function PrintPixel(x, y) {
+    var cxt = (0, _canvas.GetCanvasContext)();
+    cxt.fillRect(x * (0, _canvas.GetDelta)() + _constants.Constants._SETTINGS.margin, y * (0, _canvas.GetDelta)() + _constants.Constants._SETTINGS.margin, _constants.Constants._SETTINGS.cellSizePixel - _constants.Constants._SETTINGS.margin, _constants.Constants._SETTINGS.cellSizePixel - _constants.Constants._SETTINGS.margin);
+}
 
-var Pixel = function () {
-    function Pixel() {
-        _classCallCheck(this, Pixel);
+function ClearPixel(x, y) {
+    var cxt = (0, _canvas.GetCanvasContext)();
+    cxt.clearRect(x * (0, _canvas.GetDelta)() + _constants.Constants._SETTINGS.margin, y * (0, _canvas.GetDelta)() + _constants.Constants._SETTINGS.margin, _constants.Constants._SETTINGS.cellSizePixel - _constants.Constants._SETTINGS.margin, _constants.Constants._SETTINGS.cellSizePixel - _constants.Constants._SETTINGS.margin);
+}
+
+function UpdatePixelByClick(x, y, board) {
+    board[x][y].isAlive = !board[x][y].isAlive;
+    if (board[x][y].isAlive) {
+        PrintPixel(x, y);
+    } else {
+        ClearPixel(x, y);
     }
-
-    _createClass(Pixel, null, [{
-        key: 'printPixel',
-        value: function printPixel(x, y) {
-            var cxt = _canvas.Canvas.getCanvasContext();
-            cxt.fillRect(x * _canvas.Canvas.getDelta() + _constants.Constants._SETTINGS.margin, y * _canvas.Canvas.getDelta() + _constants.Constants._SETTINGS.margin, _constants.Constants._SETTINGS.cellSizePixel - _constants.Constants._SETTINGS.margin, _constants.Constants._SETTINGS.cellSizePixel - _constants.Constants._SETTINGS.margin);
-        }
-    }, {
-        key: 'clearPixel',
-        value: function clearPixel(x, y) {
-            var cxt = _canvas.Canvas.getCanvasContext();
-            cxt.clearRect(x * _canvas.Canvas.getDelta() + _constants.Constants._SETTINGS.margin, y * _canvas.Canvas.getDelta() + _constants.Constants._SETTINGS.margin, _constants.Constants._SETTINGS.cellSizePixel - _constants.Constants._SETTINGS.margin, _constants.Constants._SETTINGS.cellSizePixel - _constants.Constants._SETTINGS.margin);
-        }
-    }, {
-        key: 'updatePixelByClick',
-        value: function updatePixelByClick(x, y, board) {
-            board[x][y].isAlive = !board[x][y].isAlive;
-            if (board[x][y].isAlive) {
-                Pixel.printPixel(x, y);
-            } else {
-                Pixel.clearPixel(x, y);
-            }
-        }
-    }]);
-
-    return Pixel;
-}();
-
-exports.Pixel = Pixel;
+}
 
 /***/ }),
 /* 5 */
@@ -364,9 +317,13 @@ exports.Pixel = Pixel;
 Object.defineProperty(exports, "__esModule", {
 	value: true
 });
-exports.Board = undefined;
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+exports.GameBoard = GameBoard;
+exports.CreateGameBoard = CreateGameBoard;
+exports.PopulateBoard = PopulateBoard;
+exports.ShowBoardGame = ShowBoardGame;
+exports.ApplyBoardRules = ApplyBoardRules;
+exports.PrintBaseBoard = PrintBaseBoard;
+exports.UpdateBoardFromLastBoardPrinted = UpdateBoardFromLastBoardPrinted;
 
 var _cell = __webpack_require__(3);
 
@@ -382,100 +339,78 @@ var _arrayUtil = __webpack_require__(8);
 
 var _constants = __webpack_require__(0);
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+function GameBoard() {
+	return {
+		columns: _constants.Constants._SETTINGS.numberOfCells,
+		rows: _constants.Constants._SETTINGS.numberOfCells,
+		board: null,
+		createBoard: function createBoard() {
+			this.board = PopulateBoard((0, _arrayUtil.Create2DArray)(this.columns, this.rows), this.columns, this.rows);
+		}
+	};
+}
 
-var Board = function () {
-	function Board() {
-		_classCallCheck(this, Board);
+function CreateGameBoard() {
+	var gameBoard = GameBoard();
+	gameBoard.createBoard();
+	return gameBoard;
+}
+
+function PopulateBoard(board, columns, rows) {
+	for (var i = 0; i < columns; i++) {
+		for (var j = 0; j < rows; j++) {
+			board[i][j] = (0, _cell.BuildCell)(i, j);
+		}
 	}
+	return board;
+}
 
-	_createClass(Board, null, [{
-		key: 'GameBoard',
-		value: function GameBoard() {
-			return {
-				columns: _constants.Constants._SETTINGS.numberOfCells,
-				rows: _constants.Constants._SETTINGS.numberOfCells,
-				board: null,
-				createBoard: function createBoard() {
-					this.board = Board.populateBoard(_arrayUtil.ArrayUtil.create2DArray(this.columns, this.rows), this.columns, this.rows);
-				}
-			};
-		}
-	}, {
-		key: 'createGameBoard',
-		value: function createGameBoard() {
-			var gameBoard = Board.GameBoard();
-			gameBoard.createBoard();
-			return gameBoard;
-		}
-	}, {
-		key: 'populateBoard',
-		value: function populateBoard(board, columns, rows) {
-			for (var i = 0; i < columns; i++) {
-				for (var j = 0; j < rows; j++) {
-					board[i][j] = _cell.Cell.BuildCell(i, j);
-				}
-			}
-			return board;
-		}
-	}, {
-		key: 'showBoardGame',
-		value: function showBoardGame(gameBoard) {
-			if (null != gameBoard) {
-				for (var i = 0; i < gameBoard.columns; i++) {
-					for (var j = 0; j < gameBoard.rows; j++) {
-						gameBoard.board[i][j].isAlive ? _pixel.Pixel.printPixel(i, j) : _pixel.Pixel.clearPixel(i, j);
-					}
-				}
+function ShowBoardGame(gameBoard) {
+	if (null != gameBoard) {
+		for (var i = 0; i < gameBoard.columns; i++) {
+			for (var j = 0; j < gameBoard.rows; j++) {
+				gameBoard.board[i][j].isAlive ? (0, _pixel.PrintPixel)(i, j) : (0, _pixel.ClearPixel)(i, j);
 			}
 		}
-	}, {
-		key: 'applyBoardRules',
-		value: function applyBoardRules(gameBoard) {
-			if (_constants.Constants._GLOBAL_VALUES.run) {
-				var lastBoardPrinted = Board.populateBoard(_arrayUtil.ArrayUtil.create2DArray(gameBoard.columns, gameBoard.rows), gameBoard.columns, gameBoard.rows);
-				var nextTimeBoard = Board.populateBoard(_arrayUtil.ArrayUtil.create2DArray(gameBoard.columns, gameBoard.rows), gameBoard.columns, gameBoard.rows);
+	}
+}
 
-				for (var i = 0; i < gameBoard.columns; i++) {
-					for (var j = 0; j < gameBoard.rows; j++) {
-						var currentCell = gameBoard.board[i][j];
-						nextTimeBoard[i][j].isAlive = _rule.Rule.applyCellRules(gameBoard, currentCell);
-						lastBoardPrinted[i][j].isAlive = nextTimeBoard[i][j].isAlive;
-					}
-				}
+function ApplyBoardRules(gameBoard) {
+	if (_constants.Constants._GLOBAL_VALUES.run) {
+		var lastBoardPrinted = PopulateBoard((0, _arrayUtil.Create2DArray)(gameBoard.columns, gameBoard.rows), gameBoard.columns, gameBoard.rows);
+		var nextTimeBoard = PopulateBoard((0, _arrayUtil.Create2DArray)(gameBoard.columns, gameBoard.rows), gameBoard.columns, gameBoard.rows);
 
-				_constants.Constants._GLOBAL_VALUES.lastBoardPrinted = lastBoardPrinted;
-				gameBoard.board = nextTimeBoard;
-				Board.showBoardGame(gameBoard);
-				setTimeout(function () {
-					Board.applyBoardRules(gameBoard);
-				}, _constants.Constants._SETTINGS.delayTime);
+		for (var i = 0; i < gameBoard.columns; i++) {
+			for (var j = 0; j < gameBoard.rows; j++) {
+				var currentCell = gameBoard.board[i][j];
+				nextTimeBoard[i][j].isAlive = (0, _rule.ApplyCellRules)(gameBoard, currentCell);
+				lastBoardPrinted[i][j].isAlive = nextTimeBoard[i][j].isAlive;
 			}
 		}
-	}, {
-		key: 'printBaseBoard',
-		value: function printBaseBoard(board) {
-			_canvas.Canvas.showGrid();
-			_mouse.Mouse.createMouseDownListener();
-		}
-	}, {
-		key: 'updateBoardFromLastBoardPrinted',
-		value: function updateBoardFromLastBoardPrinted() {
-			if (null == _constants.Constants._GLOBAL_VALUES.lastBoardPrinted) {
-				var gameBoard = _constants.Constants._GLOBAL_VALUES.gameOfLifeBoard;
-				var rows = _constants.Constants._GLOBAL_VALUES.gameOfLifeBoard.rows;
-				var columns = _constants.Constants._GLOBAL_VALUES.gameOfLifeBoard.columns;
-				_constants.Constants._GLOBAL_VALUES.lastBoardPrinted = Board.populateBoard(_arrayUtil.ArrayUtil.create2DArray(columns, rows), columns, rows);
-			}
-			_constants.Constants._GLOBAL_VALUES.gameOfLifeBoard.board = _constants.Constants._GLOBAL_VALUES.lastBoardPrinted;
-			Board.showBoardGame(_constants.Constants._GLOBAL_VALUES.gameOfLifeBoard);
-		}
-	}]);
 
-	return Board;
-}();
+		_constants.Constants._GLOBAL_VALUES.lastBoardPrinted = lastBoardPrinted;
+		gameBoard.board = nextTimeBoard;
+		ShowBoardGame(gameBoard);
+		setTimeout(function () {
+			ApplyBoardRules(gameBoard);
+		}, _constants.Constants._SETTINGS.delayTime);
+	}
+}
 
-exports.Board = Board;
+function PrintBaseBoard(board) {
+	(0, _canvas.ShowGrid)();
+	(0, _mouse.CreateMouseDownListener)();
+}
+
+function UpdateBoardFromLastBoardPrinted() {
+	if (null == _constants.Constants._GLOBAL_VALUES.lastBoardPrinted) {
+		var rows = _constants.Constants._GLOBAL_VALUES.gameOfLifeBoard.rows;
+		var columns = _constants.Constants._GLOBAL_VALUES.gameOfLifeBoard.columns;
+		_constants.Constants._GLOBAL_VALUES.lastBoardPrinted = PopulateBoard((0, _arrayUtil.Create2DArray)(columns, rows), columns, rows);
+	}
+	_constants.Constants._GLOBAL_VALUES.gameOfLifeBoard.board = _constants.Constants._GLOBAL_VALUES.lastBoardPrinted;
+	ShowBoardGame(_constants.Constants._GLOBAL_VALUES.gameOfLifeBoard);
+}
 
 /***/ }),
 /* 6 */
@@ -487,96 +422,79 @@ exports.Board = Board;
 Object.defineProperty(exports, "__esModule", {
 	value: true
 });
-exports.Rule = undefined;
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+exports.ApplyCellRules = ApplyCellRules;
+exports.IsNeighborAlive = IsNeighborAlive;
 
 var _constants = __webpack_require__(0);
 
 var _cell = __webpack_require__(3);
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+function ApplyCellRules(gameBoard, point) {
+	var isAlive = false;
+	var neighborsAlive = 0;
 
-var Rule = function () {
-	function Rule() {
-		_classCallCheck(this, Rule);
+	for (var neighbor in _constants.Constants._NEIGHBORS) {
+		if (IsNeighborAlive(gameBoard, point, _constants.Constants._NEIGHBORS[neighbor])) {
+			neighborsAlive++;
+		}
 	}
 
-	_createClass(Rule, null, [{
-		key: 'applyCellRules',
-		value: function applyCellRules(gameBoard, point) {
-			var isAlive = false;
-			var neighborsAlive = 0;
+	if (point.isAlive && (neighborsAlive == 2 || neighborsAlive == 3)) {
+		isAlive = true;
+	} else if (!point.isAlive && neighborsAlive == 3) {
+		isAlive = true;
+	}
+	return isAlive;
+}
 
-			for (var neighbor in _constants.Constants._NEIGHBORS) {
-				if (Rule.isNeighborAlive(gameBoard, point, _constants.Constants._NEIGHBORS[neighbor])) {
-					neighborsAlive++;
-				}
+function IsNeighborAlive(gameBoard, point, neighborType) {
+	var isAlive = false;
+	switch (neighborType) {
+		case _constants.Constants._NEIGHBORS.NORTH_WEST:
+			if (point.x > 0 && point.y > 0) {
+				isAlive = (0, _cell.GetCellByPossition)(gameBoard, point.x - 1, point.y - 1).isAlive;
 			}
-
-			if (point.isAlive && (neighborsAlive == 2 || neighborsAlive == 3)) {
-				isAlive = true;
-			} else if (!point.isAlive && neighborsAlive == 3) {
-				isAlive = true;
+			break;
+		case _constants.Constants._NEIGHBORS.NORTH:
+			if (point.y > 0) {
+				isAlive = (0, _cell.GetCellByPossition)(gameBoard, point.x, point.y - 1).isAlive;
 			}
-			return isAlive;
-		}
-	}, {
-		key: 'isNeighborAlive',
-		value: function isNeighborAlive(gameBoard, point, neighborType) {
-			var isAlive = false;
-			switch (neighborType) {
-				case _constants.Constants._NEIGHBORS.NORTH_WEST:
-					if (point.x > 0 && point.y > 0) {
-						isAlive = _cell.Cell.getCellByPossition(gameBoard, point.x - 1, point.y - 1).isAlive;
-					}
-					break;
-				case _constants.Constants._NEIGHBORS.NORTH:
-					if (point.y > 0) {
-						isAlive = _cell.Cell.getCellByPossition(gameBoard, point.x, point.y - 1).isAlive;
-					}
-					break;
-				case _constants.Constants._NEIGHBORS.NORTH_EAST:
-					if (point.x < gameBoard.columns - 1 && point.y > 0) {
-						isAlive = _cell.Cell.getCellByPossition(gameBoard, point.x + 1, point.y - 1).isAlive;
-					}
-					break;
-				case _constants.Constants._NEIGHBORS.EAST:
-					if (point.x < gameBoard.columns - 1) {
-						isAlive = _cell.Cell.getCellByPossition(gameBoard, point.x + 1, point.y).isAlive;
-					}
-					break;
-				case _constants.Constants._NEIGHBORS.SOUTH_EAST:
-					if (point.x < gameBoard.columns - 1 && point.y < gameBoard.rows - 1) {
-						isAlive = _cell.Cell.getCellByPossition(gameBoard, point.x + 1, point.y + 1).isAlive;
-					}
-					break;
-				case _constants.Constants._NEIGHBORS.SOUTH:
-					if (point.y < gameBoard.rows - 1) {
-						isAlive = _cell.Cell.getCellByPossition(gameBoard, point.x, point.y + 1).isAlive;
-					}
-					break;
-				case _constants.Constants._NEIGHBORS.SOUTH_WEST:
-					if (point.x > 0 && point.y < gameBoard.rows - 1) {
-						isAlive = _cell.Cell.getCellByPossition(gameBoard, point.x - 1, point.y + 1).isAlive;
-					}
-					break;
-				case _constants.Constants._NEIGHBORS.WEST:
-					if (point.x > 0) {
-						isAlive = _cell.Cell.getCellByPossition(gameBoard, point.x - 1, point.y).isAlive;
-					}
-					break;
-				default:
-					isAlive = false;
+			break;
+		case _constants.Constants._NEIGHBORS.NORTH_EAST:
+			if (point.x < gameBoard.columns - 1 && point.y > 0) {
+				isAlive = (0, _cell.GetCellByPossition)(gameBoard, point.x + 1, point.y - 1).isAlive;
 			}
-			return isAlive;
-		}
-	}]);
-
-	return Rule;
-}();
-
-exports.Rule = Rule;
+			break;
+		case _constants.Constants._NEIGHBORS.EAST:
+			if (point.x < gameBoard.columns - 1) {
+				isAlive = (0, _cell.GetCellByPossition)(gameBoard, point.x + 1, point.y).isAlive;
+			}
+			break;
+		case _constants.Constants._NEIGHBORS.SOUTH_EAST:
+			if (point.x < gameBoard.columns - 1 && point.y < gameBoard.rows - 1) {
+				isAlive = (0, _cell.GetCellByPossition)(gameBoard, point.x + 1, point.y + 1).isAlive;
+			}
+			break;
+		case _constants.Constants._NEIGHBORS.SOUTH:
+			if (point.y < gameBoard.rows - 1) {
+				isAlive = (0, _cell.GetCellByPossition)(gameBoard, point.x, point.y + 1).isAlive;
+			}
+			break;
+		case _constants.Constants._NEIGHBORS.SOUTH_WEST:
+			if (point.x > 0 && point.y < gameBoard.rows - 1) {
+				isAlive = (0, _cell.GetCellByPossition)(gameBoard, point.x - 1, point.y + 1).isAlive;
+			}
+			break;
+		case _constants.Constants._NEIGHBORS.WEST:
+			if (point.x > 0) {
+				isAlive = (0, _cell.GetCellByPossition)(gameBoard, point.x - 1, point.y).isAlive;
+			}
+			break;
+		default:
+			isAlive = false;
+	}
+	return isAlive;
+}
 
 /***/ }),
 /* 7 */
@@ -588,9 +506,8 @@ exports.Rule = Rule;
 Object.defineProperty(exports, "__esModule", {
 	value: true
 });
-exports.Mouse = undefined;
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+exports.CreateMouseDownListener = CreateMouseDownListener;
+exports.GetMousePos = GetMousePos;
 
 var _game = __webpack_require__(2);
 
@@ -600,39 +517,23 @@ var _canvas = __webpack_require__(1);
 
 var _constants = __webpack_require__(0);
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+function CreateMouseDownListener() {
+	(0, _canvas.GetCanvas)().addEventListener('mousedown', function (evt) {
+		var mousePos = GetMousePos((0, _canvas.GetCanvas)(), evt);
+		var x = parseInt(mousePos.x / (0, _canvas.GetDelta)());
+		var y = parseInt(mousePos.y / (0, _canvas.GetDelta)());
+		(0, _pixel.UpdatePixelByClick)(x, y, _constants.Constants._GLOBAL_VALUES.lastBoardPrinted);
+		_game.Game.startStop(false);
+	}, false);
+}
 
-var Mouse = function () {
-	function Mouse() {
-		_classCallCheck(this, Mouse);
-	}
-
-	_createClass(Mouse, null, [{
-		key: 'createMouseDownListener',
-		value: function createMouseDownListener() {
-			_canvas.Canvas.getCanvas().addEventListener('mousedown', function (evt) {
-				var mousePos = Mouse.getMousePos(_canvas.Canvas.getCanvas(), evt);
-				var x = parseInt(mousePos.x / _canvas.Canvas.getDelta());
-				var y = parseInt(mousePos.y / _canvas.Canvas.getDelta());
-				_pixel.Pixel.updatePixelByClick(x, y, _constants.Constants._GLOBAL_VALUES.lastBoardPrinted);
-				_game.Game.startStop(false);
-			}, false);
-		}
-	}, {
-		key: 'getMousePos',
-		value: function getMousePos(canvas, evt) {
-			var rect = canvas.getBoundingClientRect();
-			return {
-				x: evt.clientX - rect.left,
-				y: evt.clientY - rect.top
-			};
-		}
-	}]);
-
-	return Mouse;
-}();
-
-exports.Mouse = Mouse;
+function GetMousePos(canvas, evt) {
+	var rect = canvas.getBoundingClientRect();
+	return {
+		x: evt.clientX - rect.left,
+		y: evt.clientY - rect.top
+	};
+}
 
 /***/ }),
 /* 8 */
@@ -644,33 +545,14 @@ exports.Mouse = Mouse;
 Object.defineProperty(exports, "__esModule", {
 	value: true
 });
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var ArrayUtil = function () {
-	function ArrayUtil() {
-		_classCallCheck(this, ArrayUtil);
+exports.Create2DArray = Create2DArray;
+function Create2DArray(columns, rows) {
+	var x = new Array(columns);
+	for (var i = 0; i < columns; i++) {
+		x[i] = new Array(rows);
 	}
-
-	_createClass(ArrayUtil, null, [{
-		key: "create2DArray",
-		value: function create2DArray(columns, rows) {
-			var x = new Array(columns);
-			for (var i = 0; i < columns; i++) {
-				x[i] = new Array(rows);
-			}
-			return x;
-		}
-	}]);
-
-	return ArrayUtil;
-}();
-
-;
-
-exports.ArrayUtil = ArrayUtil;
+	return x;
+}
 
 /***/ })
 /******/ ]);
