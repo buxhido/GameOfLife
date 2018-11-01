@@ -1,14 +1,14 @@
 import {Constants} from './constants.js';
-import {Board} from './board.js';
+import * as Board from './board.js';
 
 class Game {
 
 	static launchGameOfLife(settings) {
 		Game.SetSettings(settings);
-		Constants._GLOBAL_VALUES.gameOfLifeBoard = Board.createGameBoard();
-		Board.showBoardGame(Constants._GLOBAL_VALUES.gameOfLifeBoard);
+		Constants._GLOBAL_VALUES.gameOfLifeBoard = Board.CreateGameBoard();
+		Board.ShowBoardGame(Constants._GLOBAL_VALUES.gameOfLifeBoard);
 		Game.startStop(false);
-		Board.printBaseBoard(Constants._GLOBAL_VALUES.gameOfLifeBoard.board);
+		Board.PrintBaseBoard(Constants._GLOBAL_VALUES.gameOfLifeBoard.board);
 	};
 	
 	static startStop(run) {
@@ -17,9 +17,9 @@ class Game {
 		document.getElementById(Constants._SETTINGS.pauseButton_id).disabled = !document.getElementById(Constants._SETTINGS.playButton_id).disabled;
 	
 		if(run) {
-			Board.applyBoardRules(Constants._GLOBAL_VALUES.gameOfLifeBoard);
+			Board.ApplyBoardRules(Constants._GLOBAL_VALUES.gameOfLifeBoard);
 		} else {
-			Board.updateBoardFromLastBoardPrinted();	
+			Board.UpdateBoardFromLastBoardPrinted();	
 		}
 	};
 	
