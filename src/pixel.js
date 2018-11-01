@@ -1,34 +1,29 @@
-import {Canvas} from './canvas.js';
+import {GetDelta,GetCanvasContext} from './canvas.js';
 import {Constants} from './constants.js';
 
-class Pixel{
-
-    static printPixel(x,y) {
-        let cxt = Canvas.getCanvasContext();
-        cxt.fillRect(
-            (x* Canvas.getDelta())+Constants._SETTINGS.margin, 
-            (y* Canvas.getDelta())+Constants._SETTINGS.margin, 
-            Constants._SETTINGS.cellSizePixel - Constants._SETTINGS.margin, 
-            Constants._SETTINGS.cellSizePixel - Constants._SETTINGS.margin);
-    };
-    
-    static clearPixel(x,y) {
-        let cxt = Canvas.getCanvasContext();
-        cxt.clearRect(
-            (x* Canvas.getDelta())+Constants._SETTINGS.margin, 
-            (y* Canvas.getDelta())+Constants._SETTINGS.margin, 
-            Constants._SETTINGS.cellSizePixel - Constants._SETTINGS.margin , 
-            Constants._SETTINGS.cellSizePixel - Constants._SETTINGS.margin);
-    };
-    
-    static updatePixelByClick(x,y,board) {
-        board[x][y].isAlive = !board[x][y].isAlive;
-        if(board[x][y].isAlive){
-            Pixel.printPixel(x,y);
-        } else {
-            Pixel.clearPixel(x,y)
-        }
-    };
+export function PrintPixel(x,y) {
+    let cxt = GetCanvasContext();
+    cxt.fillRect(
+        (x* GetDelta())+Constants._SETTINGS.margin, 
+        (y* GetDelta())+Constants._SETTINGS.margin, 
+        Constants._SETTINGS.cellSizePixel - Constants._SETTINGS.margin, 
+        Constants._SETTINGS.cellSizePixel - Constants._SETTINGS.margin);
 }
 
-export {Pixel};
+export function ClearPixel(x,y) {
+    let cxt = GetCanvasContext();
+    cxt.clearRect(
+        (x* GetDelta())+Constants._SETTINGS.margin, 
+        (y* GetDelta())+Constants._SETTINGS.margin, 
+        Constants._SETTINGS.cellSizePixel - Constants._SETTINGS.margin , 
+        Constants._SETTINGS.cellSizePixel - Constants._SETTINGS.margin);
+}
+
+export function UpdatePixelByClick(x,y,board) {
+    board[x][y].isAlive = !board[x][y].isAlive;
+    if(board[x][y].isAlive){
+        PrintPixel(x,y);
+    } else {
+        ClearPixel(x,y)
+    }
+}

@@ -1,47 +1,42 @@
 import {Constants} from './constants.js';
 
-class Canvas {
+export function ShowGrid() {
 
-	static showGrid() {
+	UpdateCanvasDimensions();
 
-		Canvas.updateCanvasDimensions();
-
-		var context = Canvas.getCanvasContext();
-		for (var x = 0.0; x <= Canvas.getWidth(); x += Canvas.getDelta()) {
-			context.moveTo(x, 0);
-			context.lineTo(x, Canvas.getWidth());
-		}
-	
-		for (var y = 0.0; y <= Canvas.getWidth(); y += Canvas.getDelta()) {
-			context.moveTo(0, y);
-			context.lineTo(Canvas.getWidth(), y);
-		}
-	
-		context.strokeStyle = "#000";
-		context.stroke();
-	};
-
-	static updateCanvasDimensions() {
-		document.getElementById(Constants._SETTINGS.canvas_id).width = Canvas.getWidth()+1;
-		document.getElementById(Constants._SETTINGS.canvas_id).height = Canvas.getWidth()+1;
-	}
-	
-	static getCanvas() {
-		return document.getElementById(Constants._SETTINGS.canvas_id);
-	};
-	
-	static getCanvasContext() {
-		return  Canvas.getCanvas().getContext("2d");
-	};
-
-	static getWidth() {
-		return (Canvas.getDelta() * Constants._SETTINGS.numberOfCells);
+	let context = GetCanvasContext();
+	for (var x = 0.0; x <= GetWidth(); x += GetDelta()) {
+		context.moveTo(x, 0);
+		context.lineTo(x, GetWidth());
 	}
 
-	static getDelta() {
-		return Constants._SETTINGS.cellSizePixel + Constants._SETTINGS.margin  ;
+	for (var y = 0.0; y <= GetWidth(); y += GetDelta()) {
+		context.moveTo(0, y);
+		context.lineTo(GetWidth(), y);
 	}
- 
+
+	context.strokeStyle = "#000";
+	context.stroke();
 }
 
-export {Canvas};
+export function UpdateCanvasDimensions() {
+	document.getElementById(Constants._SETTINGS.canvas_id).width = GetWidth()+1;
+	document.getElementById(Constants._SETTINGS.canvas_id).height = GetWidth()+1;
+}
+
+export function GetCanvas() {
+	return document.getElementById(Constants._SETTINGS.canvas_id);
+}
+
+export function GetCanvasContext() {
+	return  GetCanvas().getContext("2d");
+}
+
+export function GetWidth() {
+	return (GetDelta() * Constants._SETTINGS.numberOfCells);
+}
+
+export function GetDelta() {
+	return Constants._SETTINGS.cellSizePixel + Constants._SETTINGS.margin  ;
+}
+
